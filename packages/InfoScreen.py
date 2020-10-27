@@ -26,7 +26,7 @@ class Info_Screen(Screen):
 
     def on_pre_enter(self):
         try:
-            info_path = ConfigModule.app_dir / 'Readme.txt'
+            info_path = ConfigModule.app_dir / 'README.txt'
             with open(info_path, 'r') as info_text:
                 self.info_text = info_text.read()
         except Exception as err:
