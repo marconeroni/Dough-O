@@ -1,0 +1,329 @@
+#:kivy 1.11.0
+#:import hex kivy.utils.get_color_from_hex
+#:import escape_markup kivy.utils.escape_markup
+
+<IconButton@ButtonBehavior+Image>:
+#for pressed state: open in photo editor --> selective color --> reduce black -50%
+
+<IconToggleButton@ToggleButtonBehavior+Image>
+
+<HomeClock@ClockLabel>:
+
+<MenuBarIcon@Image>:
+    allow_stretch: False
+    keep_ratio: True
+    size_hint: 0.7,0.7
+
+<HomeButton@Button>:
+    id: main_btn_template
+    background_normal: ''
+    markup: True
+    halign: 'left'
+    valign: 'center'
+    size_hint: 1, .4
+    padding_x: 20
+    text_size: self.size
+    source: ''
+    RelativeLayout:
+        pos: self.parent.pos
+        Image:
+            source: main_btn_template.source
+            allow_stretch: False
+            keep_ratio: True
+            size_hint: 0.5,0.5
+            pos_hint: {'x':1.5,'y':0.3}
+
+
+<Home_Screen>:
+    id: home
+    name: 'home_screen'
+    my_canvas_border: 10
+    main_clock_date: main_clock_date
+    main_clock_time: main_clock_time
+    main_clock_seconds: main_clock_seconds
+    btn_prestart: btn_prestart
+    btn_multiphase: btn_multiphase
+    btn_load_from_mem: btn_load_from_mem
+    wifi_icon: wifi_icon
+    speaker_icon: speaker_icon
+    log_icon: log_icon
+    hs_internet_icon: hs_internet_icon
+    hs_power_icon: hs_power_icon
+
+
+
+    GridLayout:
+        cols: 2
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 0.4, 1
+            #width: 230
+            padding: 10
+            spacing: 10
+
+            HomeButton:
+                id: btn_prestart
+                on_press: app.btn_sound();
+                on_release:  app.root.current = 'prestart_set_screen'
+                background_color: utils.get_color_from_hex('#11EC11')
+                text: '[font=Aldrich][b][color=111111][size=20]'+ escape_markup(app.btn_main_prestart)+'[/font][/size][/color][/b]'
+                source: './Icons/sand_64.png'
+
+
+            HomeButton:
+                id: btn_multiphase
+                on_release: app.root.current = 'multiphase_set_screen'
+                on_press: app.btn_sound()
+                background_color: utils.get_color_from_hex('#981600')
+                text: '[font=Aldrich][b][color=111111][size=20]'+ escape_markup(app.btn_main_multiphase)+'[/font][/size][/color][/b]'
+                text_size: self.size
+                source: './Icons/bncalendar_64.png'
+
+            HomeButton:
+                id: btn_load_from_mem
+                on_release:  app.root.current = 'load_from_memory'
+                on_press: app.btn_sound()
+                background_color: utils.get_color_from_hex('#FF9900')
+                text: "[font=Aldrich][b][color=111111][size=20]"+ escape_markup(app.btn_main_load_from_mem)+ "[/font][/size][/color][/b]"
+                source: './Icons/sd_64.png'
+
+
+            HomeButton:
+                id: btn_settings
+                on_release: app.root.current = 'settings_screen'
+                on_press: app.btn_sound()
+                background_color: utils.get_color_from_hex('#009688')
+                text: "[font=Aldrich][b][color=111111][size=20]"+ escape_markup(app.btn_main_settings)+ "[/font][/size][/color][/b]"
+                source: './Icons/settings_64.png' #prosymbols
+
+        GridLayout:
+            rows:2
+            RelativeLayout:
+                size_hint: 1, 0.5
+                canvas.before:
+                    Color:
+                        #rgba:(0.76,0.81,0.85,1)
+                        rgba:(0.92,0.93,0.89,1)
+                    Rectangle:
+                        pos: root.pos
+                        size:
+                            self.width-root.my_canvas_border, \
+                            self.height-root.my_canvas_border
+
+                HomeClock:
+                    id: main_clock_date
+                    markup: True
+                    text:
+                        '[font=Aldrich][b][color=#980000][size=40]'+ escape_markup(self.date_now)+'[/font][/size][/color][/b]' if self.is_running is True else \
+                        '[font=Aldrich][b][color=#850900][size=60]''[/font][/size][/color][/b]'
+                    multiline:True
+                    pos_hint: {'x': 0.02,'y': 0.32}
+
+
+                Label:
+                    id: main_clock_time
+                    markup: True
+                    text: '[font=Aldrich][b][color=#000000][size=140]'+ escape_markup(main_clock_date.time_now)+'[/font][/size][/color][/b]'
+                    multiline:True
+                    pos_hint: {'x': 0.02,'y': -0.05}
+
+                Label:
+                    id: main_clock_seconds
+                    markup: True
+                    text: '[font=Aldrich][b][color=#000000][size=20]'+ escape_markup(main_clock_date.seconds_now)+'[/font][/size][/color][/b]'
+                    multiline:True
+                    pos_hint: {'x': 0.43, 'y':-0.05}
+
+                Image:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/logo_2.png'
+                    size_hint: 0.45,0.45
+                    pos_hint: {'x': 0.28,'y': -0.09}
+
+
+                Image:
+                    id: hs_img_out_state
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: root.hs_img_out_state
+                    size_hint: 0.2,0.2
+                    pos_hint: {'x': 0.78,'y': 0.1}
+                    anim_delay:0.5
+
+                IconButton: #invisible button....
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/blank_64.png'
+                    size_hint: 0.3, 0.3
+                    pos_hint: {'x': 0.7,'y': 0.05}
+                    on_release: app.btn_sound(); app.root.current = 'log_screen'
+                #freepik
+
+                Label:
+                    id: hs_img_out_label
+                    markup: True
+                    text: '[font=Aldrich][color=#FF9900][size=12]'+ escape_markup(root.hs_img_out_label)+'[/font][/size][/color]'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+                    pos_hint: {'x': 0.38 ,'y': -0.45}
+                    #flat icons, freepik, smashicons
+
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/help_64.png'
+                    size_hint: 0.12,0.12
+                    pos_hint: {'x':0.87,'y': 0.84}
+                    on_release: self.source = './Icons/help_64.png'; app.root.current = 'info_screen'
+                    on_press:  app.btn_sound(); self.source = './Icons/help_64_pressed.png'
+
+                HS_Power_icon:
+                    id: hs_power_icon
+                    allow_stretch: False
+                    keep_ratio: True
+                    size_hint: 0.15, 0.15
+                    source: './Icons/blank_64.png'
+                    pos_hint: {'x': 0.08,'y': 0.81}
+
+
+
+
+
+                BoxLayout:
+                    id: menu_bar
+                    orientation: 'vertical'
+                    size_hint: 0.12,1
+                    padding:7
+                    spacing: 5
+                    canvas.before:
+                        Color:
+                            rgba:(0.8,0.8,0.8,1)
+
+                        Rectangle:
+                            pos: self.pos
+                            size:
+                                self.width-root.my_canvas_border, \
+                                self.height-root.my_canvas_border
+                    Label:
+                        id: lbl_wifi_data
+                        markup: True
+                        halign: 'left'
+                        valign: 'center'
+                        text_size: self.size
+                        text: '[font=Aldrich][b][color=#000000][size=10]'+ escape_markup(root.wi_fi_data)+'[/font][/size][/color][/b]'
+                        multiline:True
+                        size_hint: 0.9,0.5
+
+
+                    MenuBarIcon:
+                        id: wifi_icon
+                        source: './Icons/wifi2_64.png'
+                        #freepik
+
+
+                    MenuBarIcon:
+                        id: speaker_icon
+                        source: './Icons/speaker_64.png'
+                        #freepik
+
+                    MenuBarIcon:
+                        id: log_icon
+                        allow_stretch: False
+                        source: './Icons/log_64.png'
+                        #freepik
+
+                    HS_Internet_Icon:
+                        id: hs_internet_icon
+                        allow_stretch: False
+                        keep_ratio: True
+                        size_hint: 0.7,0.7
+                        source: './Icons/internet_64.png'
+                        #photo3idea_studio
+
+            BoxLayout:
+                orientation:'horizontal'
+                size_hint: 1,0.25
+
+                canvas.before:
+                    Color:
+                        rgba: 1,1,1,1
+                    Rectangle:
+                        pos: self.x, self.y+root.my_canvas_border
+                        size:
+                            self.width-root.my_canvas_border, \
+                            self.height-root.my_canvas_border*2
+
+                RelativeLayout:
+                    Image:
+                        allow_stretch: False
+                        keep_ratio: True
+                        source: './Icons/heat_room_128.png'
+                        size_hint: 0.4,0.4
+                        pos_hint: {'x':-0.02,'y': 0.28}
+
+                    Label:
+                        id: lbl_cell_temp
+                        markup: True
+                        text: '[font=Aldrich][b][color=#066A06][size=80]'+ escape_markup('{}'.format(root.temp_meas))+'[/font][/size][/color][/b]'
+                        pos_hint: {'x': 0.14, 'y':-0.05}
+                    Label:
+                        id: lbl_decimal_temp
+                        markup: True
+                        text: '[font=Aldrich][b][color=#066A06][size=30]'+ escape_markup('.{}'.format(root.temp_meas_decimal))+'[/font][/size][/color][/b]'
+                        pos_hint: {'x': 0.46, 'y': -0.09}
+
+                    Label:
+                        id: lbl_unit_scale
+                        markup: True
+                        text: '[font=Aldrich][b][color=#0c67f0][size=40]'+ escape_markup('{}'.format(app.temp_unit_scale))+'[/font][/size][/color][/b]'
+                        pos_hint: {'x': 0.62, 'y':0.08}
+
+                RelativeLayout:
+                    Image:
+                        allow_stretch: False
+                        keep_ratio: True
+                        source: './Icons/cpu_64.png'
+                        size_hint: 0.25,0.25
+                        pos_hint: {'x':0.27,'y': 0.2}
+                        #those_icons
+
+                    Label:
+                        markup: True
+                        text:
+                            '[font=Aldrich][b][color=#0000FF][size=30]'+ escape_markup('{}'.format(root.cpu_temp))+'[/font][/size][/color][/b]' \
+                            if root.cpu_temp_float < 85 else \
+                            '[font=Aldrich][b][color=#940000][size=30]'+ escape_markup('{}'.format(root.cpu_temp))+'[/font][/size][/color][/b]' 
+
+                        multiline:True
+                        pos_hint: {'x': 0.20, 'y':-0.2}
+
+                    Label:
+                        id: lbl_unit_scale_2
+                        markup: True
+                        text: '[font=Aldrich][b][color=#0c67f0][size=20]'+ escape_markup('{}'.format(app.temp_unit_scale))+'[/font][/size][/color][/b]'
+                        pos_hint: {'x': 0.40, 'y':-0.2}
+
+                    Image:
+                        allow_stretch: False
+                        keep_ratio: True
+                        source: './Icons/climate_64.png'
+                        size_hint: 0.3,0.3
+                        pos_hint: {'x':0.25,'y': 0.52}
+                        #eucalyypt
+
+                    Label:
+                        markup: True
+                        text: '[font=Aldrich][b][color=#0000FF][size=30]'+ escape_markup('{:.1f}'.format(root.temp_ext))+'[/font][/size][/color][/b]'
+                        multiline:True
+                        pos_hint: {'x': 0.20, 'y': 0.2}
+
+                    Label:
+                        id: lbl_unit_scale_ext
+                        markup: True
+                        text: '[font=Aldrich][b][color=#0c67f0][size=20]'+ escape_markup('{}'.format(app.temp_unit_scale))+'[/font][/size][/color][/b]'
+                        multiline:True
+                        pos_hint: {'x': 0.40, 'y':0.23}

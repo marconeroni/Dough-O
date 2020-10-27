@@ -1,0 +1,253 @@
+#:kivy 1.11.0
+
+<IconLabel@Label>:
+    multiline: False
+    font_size: 15
+    text_size:self.size
+    halign: 'left'
+    valign: 'center'
+    padding_x: 10
+
+
+
+<LoadFromMemory_Screen>:
+    name: 'load_from_memory'
+    load_filechooser: load_filechooser
+    btn_load: btn_load
+    btn_cancel: btn_cancel
+    btn_delete: btn_delete
+    _file: ''
+
+    flour_lbl: flour_lbl
+    water_lbl: water_lbl
+    yeast_lbl: yeast_lbl
+    salt_lbl: salt_lbl
+    sugar_lbl: sugar_lbl
+    butter_lbl: butter_lbl
+    milk_lbl: milk_lbl
+    eggs_lbl: eggs_lbl
+    notes_lbl: notes_lbl
+    prog_name_lbl: prog_name_lbl
+
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        padding:8
+        spacing:5
+
+
+
+
+        FileChooserIconView:
+            id: load_filechooser
+            size_hint: 1,0.7
+
+
+            on_selection: root._file = root.namefile_selection(self.selection and self.selection[0] or ''); root.load(load_filechooser.path, root._file, True)
+            canvas.before:
+                Color:
+                    rgba:(0.1,0.1,0.1,1)
+                Rectangle:
+                    pos: root.pos
+                    size: self.width, self.height
+        Label:
+            id: prog_name_lbl
+            size_hint: 1,0.1
+            markup: True
+            text: '[font=Aldrich][b][color=#42040C][size=12]'+ escape_markup(root.namefile_selection(load_filechooser.selection and load_filechooser.selection[0] or ''))+'[/font][/size][/color][/b]'
+            canvas.before:
+                Color:
+                    rgba:(0.8,0.4,0.4,1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.width, self.height
+
+        BoxLayout:
+            size_hint_y: None
+            height:40
+            padding:5
+            #spacing: 2
+            canvas.before:
+                Color:
+                    rgba:(0.1,0.1,0.1,1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.width, self.height
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/flour_32.png' #smashicons
+                size_hint: 0.4,1
+
+
+            IconLabel:
+                id: flour_lbl
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/jar_32.png' #srip
+                size_hint: 0.4,1
+
+            IconLabel:
+                id: water_lbl
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/yeast_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconLabel:
+                id: yeast_lbl
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/salt_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconLabel:
+                id: salt_lbl
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/candy_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconLabel:
+                id: sugar_lbl
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/butter_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconLabel:
+                id: butter_lbl
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/milk_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconLabel:
+                id: milk_lbl
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/egg_32.png' #eucalyp
+                size_hint: 0.4,1
+
+            IconLabel:
+                id: eggs_lbl
+
+                multiline: False
+
+
+        BoxLayout:
+            size_hint_y: None
+            height:50
+            padding:5
+            spacing:2
+            canvas.before:
+                Color:
+                    rgba:(0.1,0.1,0.1,1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.width, self.height
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/notepad_32.png' #smashicons
+                size_hint: 0.1,1
+
+
+            Label:
+                id: notes_lbl
+                size:self.texture_size
+                multiline: False
+                font_size: 12
+                text_size: self.width, self.height
+                halign: 'left'
+                valign: 'top'
+                padding_x: 10
+                size_hint: 2.5,1
+
+
+
+        Label:
+            id: prog_preview
+            text: '[font=Aldrich][b][color=#42040C][size=18]'+ escape_markup(root.prog_preview)+'[/font][/size][/color][/b]'
+            markup:True
+            text_size:self.size
+            halign: 'center'
+            valign: 'center'
+            multiline: True
+            canvas.before:
+                Color:
+                    rgba:(0.5,0.5,0.5,1)
+                Rectangle:
+                    pos: self.pos
+                    size: self.width, self.height
+
+
+
+        BoxLayout:
+            size_hint: 1,0.3
+            orientation: 'horizontal'
+            padding:5
+            spacing:2
+
+
+            Button:
+                id: btn_cancel
+                markup: True
+                size_hint: 1,1
+                text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.sm_notification_btn_cancel)+'[/font][/size][/color][/b]'
+                on_press: app.btn_cancel_sound()
+                on_release:  app.root.current = 'home_screen'
+                disabled: True if root.btns_disabled == True else False
+
+
+            Button:
+                id: btn_load
+                markup: True
+                size_hint: 1,1
+                text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.lm_notification_btn_load)+'[/font][/size][/color][/b]'
+                on_press: app.btn_ok_sound()
+                on_release:  root.load(load_filechooser.path, root._file, False)
+                disabled: True if root.btns_disabled == True else False
+
+            Button:
+                id: btn_delete
+                markup: True
+                size_hint: 1,1
+                text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.sm_notification_btn_delete)+'[/font][/size][/color][/b]'
+                on_press: app.btn_cancel_sound()
+                on_release: root.deletefile(load_filechooser.path, root._file)
+                disabled: True if root.btns_disabled == True else False

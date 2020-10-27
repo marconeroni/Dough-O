@@ -1,0 +1,7 @@
+user: dragonfit@gmail.com
+pw: dragon4378
+
+login raspberry
+
+user: pi
+pw: Marco78!

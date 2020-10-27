@@ -1,0 +1,206 @@
+#:kivy 1.11.0
+
+
+
+<SaveMenu_Screen>:
+    name: 'save_menu'
+    save_text_input: save_text_input
+    save_filechooser: save_filechooser
+    btn_save: btn_save
+    btn_cancel: btn_cancel
+    btn_delete: btn_delete
+    overwrite: False
+
+    flour_text_input: flour_text_input
+    water_text_input: water_text_input
+    yeast_text_input: yeast_text_input
+    salt_text_input: salt_text_input
+    sugar_text_input: sugar_text_input
+    butter_text_input: butter_text_input
+    milk_text_input: milk_text_input
+    eggs_text_input: eggs_text_input
+    notes_text_input: notes_text_input
+
+
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        padding:10
+        spacing:5
+
+        FileChooserIconView: #filelistview has a bug with empty rootpath! https://github.com/kivy/kivy/issues/5601
+            id: save_filechooser
+            size_hint: 1,0.7
+            #on_selection: text_input.text = self.selection and self.selection[0] or ''
+            on_selection: save_text_input.text = root.namefile_selection(self.selection and self.selection[0] or ''); root.clear_fields()
+            filters: [lambda folder, filename: not filename.endswith('.sys')]
+            canvas.before:
+                Color:
+                    rgba:(0.1,0.1,0.1,1)
+                Rectangle:
+                    pos: root.pos
+                    size: self.width, self.height
+
+
+
+        TextInput:
+            id: save_text_input
+            size_hint_y: None
+            height:30
+            multiline: False
+            on_text_validate: root.enablebuttons()
+
+        BoxLayout:
+            size_hint_y: None
+            height:40
+            padding:2
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/flour_32.png' #smashicons
+                size_hint: 0.4,1
+                #pos_hint: {'x': -0.01,'y': 0.88}
+
+            IconTextInput:
+                id: flour_text_input
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/jar_32.png' #srip
+                size_hint: 0.4,1
+
+            IconTextInput:
+                id: water_text_input
+                multiline: False
+
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/yeast_32.png' #freepik
+                size_hint: 0.4,1
+            IconTextInput:
+                id: yeast_text_input
+                multiline: False
+                on_text_validate: root.enablebuttons()
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/salt_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconTextInput:
+                id: salt_text_input
+                multiline: False
+                on_text_validate: root.enablebuttons()
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/candy_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconTextInput:
+                id: sugar_text_input
+                multiline: False
+                on_text_validate: root.enablebuttons()
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/butter_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconTextInput:
+                id: butter_text_input
+                multiline: False
+                on_text_validate: root.enablebuttons()
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/milk_32.png' #freepik
+                size_hint: 0.4,1
+
+            IconTextInput:
+                id: milk_text_input
+                multiline: False
+                on_text_validate: root.enablebuttons()
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/egg_32.png' #eucalyp
+                size_hint: 0.4,1
+
+            IconTextInput:
+                id: eggs_text_input
+                multiline: False
+                on_text_validate: root.enablebuttons()
+
+        BoxLayout:
+            size_hint_y: None
+            height:35
+            padding:2
+
+            Image:
+                allow_stretch: False
+                keep_ratio: True
+                source: './Icons/notepad_32.png' #smashicons
+                size_hint: 0.1,1
+
+
+            TextInput:
+                id: notes_text_input
+                multiline: False
+                on_text_validate: root.enablebuttons()
+                size_hint: 2.5,1
+
+
+        Label:
+            id: lbl_notification
+            markup: True
+            valign: 'center'
+            halign: 'left'
+            text: '[font=Aldrich][size=30][color=#FFFFFF]'+escape_markup(root.lbl_notification)+'[/font][/size][/color]'
+            #pos_hint: {'x':0.33, 'y':0.35}
+
+
+        BoxLayout:
+            size_hint: 1,0.3
+            orientation: 'horizontal'
+
+            Button:
+                id: btn_cancel
+                markup: True
+                size_hint: 1,1
+                text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.sm_notification_btn_cancel)+'[/font][/size][/color][/b]'
+                on_release:  app.root.current = 'multiphase_set_screen'
+                on_press: app.btn_cancel_sound()
+                disabled: True if root.btns_disabled == True else False
+
+
+            Button:
+                id: btn_save
+                markup: True
+                size_hint: 1,1
+                text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.sm_notification_btn_save)+'[/font][/size][/color][/b]'
+                on_press: app.btn_ok_sound()
+                on_release:  root.saveprogram(); root.save(save_filechooser.path, save_text_input.text) #first create stream, then save file object
+                disabled: True if root.btns_disabled == True else False
+
+            Button:
+                id: btn_delete
+                markup: True
+                size_hint: 1,1
+                text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.sm_notification_btn_delete)+'[/font][/size][/color][/b]'
+                on_press: app.btn_cancel_sound()
+                on_release: root.deletefile(save_filechooser.path, save_text_input.text)
+                disabled: True if root.btns_disabled == True else False
+
+

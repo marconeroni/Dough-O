@@ -1,0 +1,9 @@
+Scritta Dough-O! : MARQUISETTE BTN BOLD
+sottotitolo : AVERIA SERIF LIBRE REGULAR
+
+sfondo: #ebede4
+scritta: #01533b
+simbolo: #6b0732
+
+dimensione pannello: 225 x 135 mm
+dimensione foro display: 175 x 103 mm

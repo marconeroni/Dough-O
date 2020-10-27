@@ -1,0 +1,347 @@
+#:kivy 1.11.0
+
+<PrestartSetLabel@Label>
+    id: psl
+    markup: True
+    text_size: self.size
+    font_size: 15
+    valign: 'center'
+    halign: 'left'
+    padd_hint_y: 0.18           # distance between labels
+    startpos_hint_x: 0.08       # start position labels
+    startpos_hint_y: 0.47
+
+
+<PrestartValueLabel@Label>:
+    id: pvl
+    markup: True
+    text_size: self.size
+    font_size: 35
+    valign: 'center'
+    halign: 'right'
+    padd_hint_x: 0.14
+    startpos_hint_x: -0.74
+    startpos_hint_y: 0.018
+
+
+<PS_LongPressButton@LongPressButton>
+    background_normal: ''
+    background_color: utils.get_color_from_hex('#FF9900')
+    size_hint: 0.1,0.1
+    halign: 'center'
+    valign: 'center'
+    markup: True
+    text_size: self.size
+    font_size: 30
+    padd_hint_y: 0.15           # vertical distance between buttons
+    padd_hint_x: 0.16           # horizontal distance between buttons
+    startpos_hint_y: 0.23       # right position buttons
+    startpos_hint_x: 0.14       # start position buttons
+    min_symb: '-'               # min symbol
+    plus_symb: '+'              # plus symbol
+    on_press: app.btn_sound()
+
+
+<PreStart_Set_Screen>:
+    name: 'prestart_set_screen'
+    id: pre_ss
+
+
+    GridLayout:
+        cols:2
+        size_hint: 1.7,1
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            RelativeLayout:
+                size_hint: 1, 0.15
+                id:prestart_title_area
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.width, self.height
+
+                Label:
+                    markup: True
+                    text: '[font=Aldrich][b][color=#980000][size=38]'+ escape_markup('{}'.format(app.prestart_set_title))+'[/font][/size][/color][/b]'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+
+            RelativeLayout:
+                size_hint: 1,0.85
+                id: dash_central_sx_area
+                canvas.before:
+                    Color:
+                        rgba:(0.1,0.1,0.1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.width, self.height
+
+                PrestartSetLabel:
+                    id: lbl_psl_stt
+                    text: '[font=Aldrich][b][color=#ffffff]'+ escape_markup('{}'.format(app.prestart_set_temp_target))+'[/font][/color][/b]'
+                    pos_hint: {'x': self.startpos_hint_x, 'y': self.startpos_hint_y}
+
+                PrestartSetLabel:
+                    id: lbl_start
+                    text: '[font=Aldrich][b][color=#ffffff]'+ escape_markup('{}'.format(app.prestart_set_start))+'[/font][/color][/b]'
+                    #font_size: 23
+                    pos_hint: {'x': self.startpos_hint_x, 'y':self.startpos_hint_y-0.35}
+
+                Image:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/thermometer_64.png' #freepik
+                    size_hint: 0.1,0.1
+                    pos_hint: {'x': -0.01,'y': 0.88}
+
+                PrestartValueLabel:
+                    id: temp_target_value
+                    text: '[font=Aldrich][size=85][color=#980000]'+ escape_markup('{}'.format(root.temp_target_view))+'[/font][/size][/color]'
+                    pos_hint: {'x':-0.5, 'y':0.32}
+
+                Image:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/calendar_64.png' #freepik
+                    size_hint: 0.1,0.1
+                    pos_hint: {'x': -0.01,'y': 0.54}
+
+                PrestartValueLabel:
+                    id: temp_target_value_decimal
+                    text: '[font=Aldrich][size=35][color=#980000]'+ escape_markup('.{}'.format(root.temp_target_decimal_view))+'[/font][/size][/color]'
+                    pos_hint: {'x':-0.42, 'y':0.31}
+
+                PrestartSetLabel:
+
+                    id: unit_scale
+                    text: '[font=Aldrich][size=38][b][color=#FFFF00]'+ escape_markup('{}'.format(app.temp_unit_scale)) +'[/font][/size][/color][/b]'
+                    pos_hint: {'x':0.16, 'y':0.32}
+
+                PS_LongPressButton:
+                    id: minplusbut_plus
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                    pos_hint: {'x':0.65, 'y':0.85}
+                    on_long_press: root.increment_temp('+')
+                    on_press: root.increment_temp('+')
+
+
+                PS_LongPressButton:
+                    id: minplusbut_min
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                    pos_hint: {'x':0.65, 'y':0.7}
+                    on_long_press: root.increment_temp('-') #change direction
+                    on_press: root.increment_temp('-')
+
+           #------end of temp target's widgets
+
+           #-----begin of year's widget
+                PrestartValueLabel:
+                    id: year
+                    text: '[font=Aldrich][b][color=#009688]'+ escape_markup(str(root.year_start))+'[/font][/color][/b]'
+                    pos_hint: {'x':self.startpos_hint_x, 'y':self.startpos_hint_y}
+
+                PS_LongPressButton:
+                    id: minplusbut_year_plus
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x, 'y': self.startpos_hint_y}
+                    on_long_press: root.increment_year('+')
+                    on_press: root.increment_year('+')
+
+                PS_LongPressButton:
+                    id: minplusbut_year_min
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                    pos_hint: {'x': self.startpos_hint_x, 'y': self.startpos_hint_y - self.padd_hint_y}
+                    on_long_press: root.increment_year('-')
+                    on_press: root.increment_year('-')
+
+
+           #------begin of month's widgets
+
+                PrestartValueLabel:
+                    id: month_name
+                    text: '[font=Aldrich][b][color=#009688]'+ escape_markup(root.month_start)+'[/font][/color][/b]'
+                    pos_hint: {'x':self.startpos_hint_x+ self.padd_hint_x, 'y':self.startpos_hint_y}
+
+
+
+                PS_LongPressButton:
+                    id: minplusbut_max
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x+ self.padd_hint_x, 'y': self.startpos_hint_y}
+                    on_long_press: root.increment_month('+')
+                    on_press: root.increment_month('+')
+
+                PS_LongPressButton:
+                    id: minplusbut_min
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                    pos_hint: {'x': self.startpos_hint_x+ self.padd_hint_x, 'y': self.startpos_hint_y - self.padd_hint_y}
+                    on_long_press: root.increment_month('-')
+                    on_press: root.increment_month('-')
+
+
+
+                #--------end of month's widget
+
+                #-------begin of day's widget
+
+
+                PrestartValueLabel:
+                    id: day_start
+                    text: '[font=Aldrich][b][color=#009688]'+ escape_markup(str(root.day_start))+'[/font][/color][/b]'
+                    pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x*2, 'y':self.startpos_hint_y}
+
+                PS_LongPressButton:
+                    id: minplusbut_plus_day
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x*2, 'y':self.startpos_hint_y}
+                    on_long_press: root.increment_day('+')
+                    on_press: root.increment_day('+')
+
+                PS_LongPressButton:
+                    id: minplusbut_min_day
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x+self.padd_hint_x*2, 'y':self.startpos_hint_y- self.padd_hint_y}
+                    on_long_press: root.increment_day('-')
+                    on_press: root.increment_day('-')
+
+
+#------------------end of day's widget
+
+#----------------begin of hour widget
+
+
+                PrestartValueLabel:
+                    id: hour_start
+                    text: '[font=Aldrich][b][color=#009688]'+ escape_markup('{:02d}'. format(root.hour_start))+'[/font][/color][/b]'
+                    pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x*3+0.07, 'y':self.startpos_hint_y}
+
+                PS_LongPressButton:
+                    id: minplusbut_plus_hour
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x*3+0.05, 'y':self.startpos_hint_y}
+                    on_long_press: root.increment_hour('+')
+                    on_press: root.increment_hour('+')
+
+                PS_LongPressButton:
+                    id: minplusbut_min_hour
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x+ self.padd_hint_x*3+0.05, 'y':self.startpos_hint_y-self.padd_hint_y}
+                    on_long_press: root.increment_hour('-')
+                    on_press: root.increment_hour('-')
+
+#----------------------------end of hour's widget
+
+#---------------------------begin of minute's widget
+
+                PrestartValueLabel:
+                    id: minute_start
+                    text: '[font=Aldrich][b][color=#009688]'+ escape_markup('{:02d}'. format(root.minute_start))+'[/font][/color][/b]'
+                    pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x*4+0.1, 'y':self.startpos_hint_y}
+
+                PS_LongPressButton:
+                    id: minplusbut_plus_minute
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x*4+0.05, 'y':self.startpos_hint_y}
+                    on_long_press: root.increment_minute('+')
+                    on_press: root.increment_minute('+')
+
+                PS_LongPressButton:
+                    id: minplusbut_min_minute
+                    text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                    pos_hint: {'x':self.startpos_hint_x+ self.padd_hint_x*4+0.05, 'y':self.startpos_hint_y-self.padd_hint_y}
+                    on_long_press: root.increment_minute('-')
+                    on_press: root.increment_minute('-')
+
+#----------------end of minute's setting
+
+                PrestartValueLabel:
+                    id: colon_label
+                    text: '[font=Aldrich][b][color=#009688]:[/font][/color][/b]'
+                    pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x*3+0.13, 'y':self.startpos_hint_y+0.01}
+
+                ClockLabel:
+                    markup: True
+                    text: '[font=Aldrich][b][color=#F04DF0][size=15]'+ escape_markup('{}\n{}:{}'.format(self.date_now_short, self.time_now, self.seconds_now))+'[/font][/size][/color][/b]'
+                    multiline:True
+                    pos_hint: {'x':0.4, 'y':0.32}
+
+
+
+
+
+        BoxLayout:
+            orientation: 'vertical'
+
+
+            RelativeLayout:
+                #size_hint: 0.5,0.5
+
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: root.width, root.height
+
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/home_128.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.68}
+                    on_release:  app.root.current = 'home_screen'; self.source = './Icons/home_128.png'
+                    on_press: app.btn_cancel_sound(); self.source = './Icons/home_128_pressed.png' ; root.backhome()
+                    #freepik
+
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/accept_128.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.38}
+                    on_release:  root.validate(); root.commit();app.root.current = 'prestart_dashboard_screen'; self.source = './Icons/accept_128.png'
+                    on_press:  app.btn_ok_sound(); self.source = './Icons/accept_128_pressed.png'
+                    #icongeek26
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/bin_128.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.1}
+                    on_release: self.source = './Icons/bin_128.png'
+                    on_press: app.btn_sound(); self.source = './Icons/bin_128_pressed.png'; root.clear_all()
+                    #Kiranshastry
+
+                Image:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/slider.png'
+                    size_hint: 0.1,0.1
+                    pos_hint: {'x': 0.06,'y': 0.9}
+
+
+    RelativeLayout: #this relative layout is inserted in root widget for line draw design after all
+
+        canvas.after:
+            Color:
+                rgba:(0.36,0.36,0.36,1)
+            Line:
+                points: 0, root.height-root.ids.dash_central_sx_area.height/1.9, root.ids.dash_central_sx_area.width,  root.height-root.ids.dash_central_sx_area.height/1.9
+
+            Line:
+                points: root.width/1.9, root.height-root.ids.dash_central_sx_area.height/1.9, root.width/1.9, 0
+
+            Line:
+                points: 0, root.height-root.ids.dash_central_sx_area.height/1.3, root.ids.dash_central_sx_area.width,  root.height-root.ids.dash_central_sx_area.height/1.3
+
+            Line:
+                points: root.width/1.5, root.height-root.ids.prestart_title_area.height, root.width/1.5,  root.height-root.ids.dash_central_sx_area.height/1.9
+

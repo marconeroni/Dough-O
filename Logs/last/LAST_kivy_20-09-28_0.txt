@@ -1,0 +1,18 @@
+[INFO   ] Logger: Record log in c:\Users\mneroni.INIM\Desktop\Dough-O\Logs\kivy_20-09-28_0.txt
+[INFO   ] Factory: 184 symbols loaded
+[DEBUG  ] Cache: register <kv.lang> with limit=None, timeout=None
+[DEBUG  ] Cache: register <kv.image> with limit=None, timeout=60
+[DEBUG  ] Cache: register <kv.atlas> with limit=None, timeout=None
+[INFO   ] Image: Providers: img_tex, img_dds, img_sdl2, img_gif (img_pil, img_ffpyplayer ignored)
+[DEBUG  ] Cache: register <kv.texture> with limit=1000, timeout=60
+[DEBUG  ] Cache: register <kv.shader> with limit=1000, timeout=3600
+[INFO   ] Text: Provider: sdl2
+[DEBUG  ] Audio: option <gstplayer> ignored by config
+[DEBUG  ] Audio: option <ffpyplayer> ignored by config
+[DEBUG  ] Audio: register SoundSDL2
+[DEBUG  ] Audio: register MusicSDL2
+[INFO   ] Audio: Providers: audio_sdl2 (audio_gstplayer, audio_ffpyplayer ignored)
+[DEBUG  ] Cache: register <textinput.label> with limit=None, timeout=60.0
+[DEBUG  ] Cache: register <textinput.width> with limit=None, timeout=60.0
+[DEBUG  ] App: Loading kv <c:/Users/mneroni.INIM/Desktop/Dough-O\main.kv>
+[INFO   ] Window: Provider: sdl2

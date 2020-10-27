@@ -1,0 +1,3 @@
+TEMPERATURA barattoli: 42-43°
+temperatura target (cella) 43°
+tempo: 12h

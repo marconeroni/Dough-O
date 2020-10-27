@@ -1,0 +1,413 @@
+#:kivy 1.11.0
+
+
+
+<MP_DB_LongPressButton@LongPressButton>
+    background_normal: ''
+    background_color: utils.get_color_from_hex('#FF9900')
+    size_hint: 0.1,0.1
+    halign: 'center'
+    valign: 'center'
+    markup: True
+    #text: '[font=Aldrich][color=#000000]+[/font][/color]'
+    text_size: self.size
+    font_size: 30
+    padd_hint_y: 0.3          # vertical distance between buttons
+    padd_hint_x: 0.18           # horizontal distance between buttons
+    startpos_hint_y: 0.5      # right position buttons
+    startpos_hint_x: 0.08      # start position buttons
+    min_symb: '-'               # min symbol
+    plus_symb: '+'              # plus symbol
+
+
+
+<MP_DB_ValueLabel@Label>:
+    valign: 'center'
+    halign: 'right'
+    markup:True
+    text_size: self.size
+
+
+
+<MultiPhase_DashBoard_Screen>:
+    name: 'multiphase_dashboard_screen'
+    id:mp_ds
+    mp_temp_chart: mp_temp_chart
+    lbl_timer: lbl_timer
+    icon_timer: icon_timer
+    mp_blink_icon: mp_blink_icon
+    mp_sound_toggle_btn: mp_sound_toggle_btn
+    mp_wifi_toggle_btn: mp_wifi_toggle_btn
+    mp_cloud_icon: mp_cloud_icon
+    mp_internet_icon: mp_internet_icon
+    mp_power_icon: mp_power_icon
+    mp_compressor_icon : mp_compressor_icon
+
+    GridLayout:
+        cols:2
+        size_hint: 1.7,1
+
+        BoxLayout:
+            orientation: 'vertical'
+
+
+            RelativeLayout:
+                id: MP_dash_title_area
+                size_hint: 1, 0.15
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.width, self.height
+
+                Label:
+                    markup: True
+                    text: '[font=Aldrich][b][color=#980000][size=38]'+ escape_markup(app.multiphase_dash_title)+'[/font][/size][/color][/b]'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+
+            RelativeLayout:
+                id: MP_central_dashboard_area
+                size_hint: 1, 0.5
+
+                canvas.before:
+                    Color:
+                        rgba:(0.1,0.1,0.1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.width, self.height
+
+
+                BoxLayout:
+                    id: MP_box_2
+                    orientation:  'horizontal'
+                    RelativeLayout:
+                        size_hint: 2.7,1
+                        id: MP_central_lft_dashboard_area
+                        canvas.before:
+                            Color:
+                                rgba:(0.73,0.73,0.73,1)
+                            Rectangle:
+                                pos: root.pos
+                                size: self.width, self.height
+
+
+                        IconButton:
+                            id: icon_timer
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/sand_clock_128.png' #pixelperfect
+                            size_hint: 0.2,0.2
+                            pos_hint: {'x': -0.03,'y': 0.72}
+                            on_release: self.source = './Icons/sand_clock_128.png'
+                            on_press: lbl_timer.switchtimer(None); self.source = './Icons/sand_clock_128_pressed.png'
+
+
+                        MPTimerLabel:
+                            id: lbl_timer
+                            markup:True
+                            text:
+                                '[font=Aldrich][color=#009688][size=44]'+ escape_markup(self.format_time)+'[/font][/size][/color]' \
+                                if self._time_format_flag == False \
+                                else '[font=Aldrich][color=#009688][size=48]'+ escape_markup(self.format_time)+'[/font][/size][/color]' 
+
+                            pos_hint: {'x': -0.09,'y': 0.3}
+
+                        MP_DB_ValueLabel:
+                            id: mp_lbl_actual_phase
+                            valign: 'center'
+                            halign: 'center'
+
+                            text:
+                                '[font=Aldrich][color=#087308][size=25]'+ escape_markup('{} {}'.format(app.multiphase_dash_phase, root.actual_phase))+'[/font][/size][/color]' \
+                                if root.program_is_running == True else \
+                                '[font=Aldrich][color=#087308][size=20]'+ escape_markup('{}'.format(app.program_end))+'[/font][/size][/color]'
+                            pos_hint: {'x': 0.35,'y': 0.35}
+
+                        MP_DB_ValueLabel:
+                            id: mp_lbl_actual_phase_duration
+                            valign: 'center'
+                            halign: 'center'
+
+                            text:
+                                '[font=Aldrich][color=#171717][size=15]'+ escape_markup('{:.01f} {}'.format(root.actual_phase_duration, app.time_unit))+'[/font][/size][/color]' \
+                                if root.program_is_running == True else ''
+                            pos_hint: {'x': 0.35,'y': 0.25}
+
+
+                        MP_DB_ValueLabel:
+                            id: MP_lbl_temp_meas
+                            text: '[font=Aldrich][color=#FF0000][size=55]'+ escape_markup('{}'.format(root.temp_meas))+'[/font][/size][/color]'
+                            pos_hint: {'x': - 0.65,'y': -0.04}
+
+
+                        MP_DB_ValueLabel:
+                            id: lbl_decimal_temp
+                            text: '[font=Aldrich][b][color=#FF0000][size=32]'+ escape_markup('.{}'.format(root.temp_meas_decimal))+'[/font][/size][/color][/b]'
+                            pos_hint: {'x': -0.57, 'y': -0.06}
+
+                        MP_DB_ValueLabel:
+                            id:lbl_unit_scale
+                            text: '[font=Aldrich][color=#0c67f0][size=15]'+ escape_markup('{}'.format(app.temp_unit_scale))+'[/font][/size][/color]'
+                            pos_hint: {'x': -0.52,'y': 0.03}
+
+
+
+                        Image:
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/heat_room_128.png' #freepik
+                            size_hint: 0.2,0.2
+                            pos_hint: {'x': -0.03,'y': 0.39}
+
+                        MP_DB_ValueLabel:
+                            id: MP_lbl_temp_target
+                            text: '[font=Aldrich][color=#9900FF][size=45]'+ escape_markup('{}'.format(root.actual_temp_target))+'[/font][/size][/color]'
+                            pos_hint: {'x': -0.18,'y': -0.04}
+
+                        MP_DB_ValueLabel:
+                            id: MP_lbl_decimal_temp_target
+                            text: '[font=Aldrich][b][color=#9900FF][size=32]'+ escape_markup('.{}'.format(root.actual_temp_target_decimal))+'[/font][/size][/color][/b]'
+                            pos_hint: {'x': -0.10, 'y': -0.05}
+
+                        MP_DB_ValueLabel:
+                            id: MP_lbl_unit_scale_target
+                            text: '[font=Aldrich][color=#0c67f0][size=15]'+ escape_markup('{}'.format(app.temp_unit_scale))+'[/font][/size][/color]'
+                            pos_hint: {'x':-0.04,'y': 0.03}
+
+
+
+                        MP_DB_ValueLabel:
+                            id:MP_lbl_temp_ext
+                            text: '[font=Aldrich][color=#0000FF][size=25]'+ escape_markup('{:.1f} {}'.format(root.temp_ext,app.temp_unit_scale))+'[/font][/size][/color]'
+                            pos_hint: {'x': -0.65,'y': -0.35}
+
+                        MP_DB_ValueLabel:
+                            id: lbl_cpu_temp
+                            text:
+                                '[font=Aldrich][b][color=#940000][size=10]CPU: '+ escape_markup('{} {}'.format(root.cpu_temp, app.temp_unit_scale))+'[/font][/size][/color][/b]' 
+                            pos_hint: {'x': 0.34,'y': -0.53}
+
+                        MP_DB_ValueLabel:
+                            id: mp_status_code
+                            text:
+                                '[font=Aldrich][b][color=#940000][size=10]I/O STATUS CODE: '+ escape_markup('{}'.format(root.output_status_code))+'[/font][/size][/color][/b]' 
+                            pos_hint: {'x': 0.14,'y': -0.53}
+
+                        Image:
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/finish_flag_128.png' #freepik
+                            size_hint: 0.1,0.1
+                            pos_hint: {'x': 0.4,'y': 0.05}
+
+                        MP_DB_ValueLabel:
+                            id: MP_lbl_time_end
+                            halign: 'left'
+                            valign: 'center'
+
+                            text: '[font=Aldrich][color=#171717][size=15]'+ escape_markup('{}'.format(root.time_end))+'[/font][/size][/color]'
+                            pos_hint: {'x': 0.49,'y': -0.4}
+
+
+
+                        Image:
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/document_128.png' #freepik
+                            size_hint: 0.1,0.1
+                            pos_hint: {'x': 0.4,'y': 0.2}
+
+
+                        MP_DB_ValueLabel:
+                            id: MP_lbl_program
+                            valign: 'center'
+                            halign: 'left'
+                            text: '[font=Aldrich][color=#171717][size=15]'+ escape_markup('{}'.format(root.program))+'[/font][/size][/color]'
+                            pos_hint: {'x': 0.49,'y': -0.25}
+
+
+                        MP_DB_ValueLabel:
+                            align: 'center'
+                            halign: 'left'
+                            id: MP_lbl_time_duration
+                            text: '[font=Aldrich][color=#171717][size=15]'+ escape_markup('--> {:.1f} h'.format(root.total_duration))+'[/font][/size][/color]'
+                            pos_hint: {'x': 0.82,'y': -0.4}
+
+
+                        MPBlinkIcon:
+                            id: mp_blink_icon
+                            allow_stretch: False
+                            keep_ratio: True
+                            size_hint: 0.2,0.2
+                            pos_hint: {'x': 0.48,'y': 0.38}
+                            #pixelperfect
+
+                        MP_Power_icon:
+                            id: mp_power_icon
+                            allow_stretch: False
+                            keep_ratio: True
+                            size_hint: 0.25,0.25
+                            pos_hint: {'x': 0.6,'y': -0.38}
+
+
+                        Image:
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/climate_128.png' #freepik
+                            size_hint: 0.2,0.2
+                            pos_hint: {'x': -0.02,'y': 0.06}
+
+                    RelativeLayout:
+                        id: MP_central_rgt_dashboard_area
+                        canvas.before:
+                            Color:
+                                rgba:(0.36,0.36,0.36,1)
+                            Rectangle:
+                                pos: root.pos
+                                size: self.width, self.height
+
+                        Image:
+                            id: mp_img_out_state
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: root.mp_img_out_state
+                            size_hint: 0.8,0.8
+                            pos_hint: {'x': 0.12,'y': 0.25}
+                            anim_delay:0.5
+
+                        MP_Compressor_Icon:
+                            id: mp_compressor_icon
+                            allow_stretch: False
+                            keep_ratio: True
+                            size_hint: 0.15,0.15
+                            pos_hint: {'x': 0.8,'y': 0.02}
+
+                        IconButton: # invisible button...
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/blank_64.png'
+                            size_hint: 0.9, 0.9
+                            pos_hint: {'x': 0,'y': 0}
+                            on_release: app.btn_sound(); app.root.current = 'log_screen'
+
+
+                        Label:
+                            id: mp_img_out_label
+                            markup: True
+                            text: '[font=Aldrich][color=#FF9900][size=20]'+ escape_markup(root.mp_img_out_label)+'[/font][/size][/color]'
+                            text_size: self.size
+                            halign: 'center'
+                            valign: 'center'
+                            pos_hint: {'x': 0 ,'y': -0.3}
+                            #flat icons, freepik, smashicons
+
+
+            RelativeLayout: # this layout is only a holder for canvas
+                id: mp_graph_layout
+                size_hint: 1,0.35
+                #set cavas.before if you want the temperature target not to be masked by the target line
+                #set canvas.after if you want the target line always on top
+                canvas.after:
+                    Color:
+                        rgba: hex('#aafa93')
+                    Line:
+                        points: root.target_line
+
+                MultiPhaseChart: # is mandatory to set limits!
+                    id: mp_temp_chart
+                    #size_hint: 1,0.35
+                    data: root.mp_chart_data
+
+
+
+
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            id: MP_box_3
+
+            RelativeLayout:
+                #size_hint: 0.5,0.5
+                id: MP_rel_3
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: root.width, root.height
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/stop_128.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.65}
+                    on_release: self.source = './Icons/stop_128.png'; app.root.current = 'multiphase_set_screen'
+                    on_press: app.btn_cancel_sound(); self.source = './Icons/stop_128_pressed.png'
+                    #freepik
+
+                IconToggleButton:
+                    id: mp_sound_toggle_btn
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/speaker_64.png' if self.state == 'normal' else  './Icons/speaker_disabled_64.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.4}
+                    on_state: root.restore_audio() if self.state == 'normal' else root.mute_audio()
+                    on_press: app.btn_sound()
+                    #freepik
+
+                IconToggleButton:
+                    id: mp_wifi_toggle_btn
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/wifi2_64.png' if self.state == 'normal' else  './Icons/wifi2_disabled_64.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.15}
+                    on_state: root.switch_wifi(True) if self.state == 'normal' else root.switch_wifi(False)
+                    on_press: app.btn_sound()
+
+
+
+                MP_Cloud_Icon:
+                    id: mp_cloud_icon
+                    allow_stretch: False
+                    keep_ratio: True
+                    size_hint: 0.08,0.07
+                    pos_hint: {'x': 0.08,'y': 0.03}
+
+                MP_Internet_Icon:
+                    id: mp_internet_icon
+                    allow_stretch: False
+                    keep_ratio: True
+                    size_hint: 0.07,0.07
+                    pos_hint: {'x': 0.02,'y': 0.03}
+                    #mavadee
+
+                ClockLabel:
+                    markup: True
+                    text: '[font=Aldrich][b][color=#32A852][size=15]'+ escape_markup('{}\n{:^10} {}'.format(self.date_now_short, self.time_now, self.seconds_now))+'[/font][/size][/color][/b]'
+                    multiline:True
+                    pos_hint: {'x': -0.42, 'y':0.45}
+
+
+
+    RelativeLayout: #this relative layout is inserted in root widget for line draw design after all
+
+        canvas.after:
+            Color:
+                rgba:(0.36,0.36,0.36,1)
+            Line:
+                points: 0, root.height-root.ids.MP_dash_title_area.height, root.ids.MP_central_lft_dashboard_area.width,  root.height-root.ids.MP_dash_title_area.height
+            Line:
+                points: root.width/2.3, root.height-root.ids.MP_dash_title_area.height, root.width/2.3,root.height-root.ids.MP_dash_title_area.height-root.ids.MP_central_lft_dashboard_area.height/3
+            Line:
+                points: 0, root.height-root.ids.MP_dash_title_area.height-root.ids.MP_central_lft_dashboard_area.height/3, root.ids.MP_central_lft_dashboard_area.width,  root.height-root.ids.MP_dash_title_area.height-root.ids.MP_central_lft_dashboard_area.height/3
+            Line:
+                points: 0, root.height-root.ids.MP_dash_title_area.height-root.ids.MP_central_lft_dashboard_area.height/1.5, root.ids.MP_central_lft_dashboard_area.width,  root.height-root.ids.MP_dash_title_area.height-root.ids.MP_central_lft_dashboard_area.height/1.5           
+            Line:
+                points: root.width/4,root.height-root.ids.MP_dash_title_area.height-root.ids.MP_central_lft_dashboard_area.height/1.5, root.width/4,  root.height-root.ids.MP_dash_title_area.height-root.ids.MP_central_lft_dashboard_area.height

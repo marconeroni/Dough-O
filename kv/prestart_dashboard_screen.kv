@@ -1,0 +1,348 @@
+#:kivy 1.11.0
+
+
+
+<PSDB_LongPressButton@LongPressButton>
+    background_normal: ''
+    background_color: utils.get_color_from_hex('#FF9900')
+    size_hint: 0.1,0.1
+    halign: 'center'
+    valign: 'center'
+    markup: True
+    #text: '[font=Aldrich][color=#000000]+[/font][/color]'
+    text_size: self.size
+    font_size: 30
+    padd_hint_y: 0.3          # vertical distance between buttons
+    padd_hint_x: 0.18           # horizontal distance between buttons
+    startpos_hint_y: 0.5      # right position buttons
+    startpos_hint_x: 0.08      # start position buttons
+    min_symb: '-'               # min symbol
+    plus_symb: '+'              # plus symbol
+
+
+
+<PS_DB_ValueLabel@Label>:
+    valign: 'center'
+    halign: 'right'
+    markup:True
+    text_size: self.size
+
+
+
+<PreStart_DashBoard_Screen>:
+    name: 'prestart_dashboard_screen'
+    id: p_ds
+    ps_temp_chart: ps_temp_chart
+    #ps_img_out_state: ps_img_out_state
+    ps_lbl_timer: ps_lbl_timer
+    lbl_bell: lbl_bell
+    ps_blink_icon: ps_blink_icon
+    ps_wifi_toggle_btn: ps_wifi_toggle_btn
+    ps_sound_toggle_btn: ps_sound_toggle_btn
+    ps_internet_icon : ps_internet_icon
+    ps_cloud_icon: ps_cloud_icon
+    ps_power_icon: ps_power_icon
+    ps_compressor_icon : ps_compressor_icon
+
+
+    GridLayout:
+        cols:2
+        size_hint: 1.7,1
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            RelativeLayout:
+                id: prestart_dash_title_area
+                size_hint: 1, 0.15
+
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.width, self.height
+
+                Label:
+                    markup: True
+                    text: '[font=Aldrich][b][color=#980000][size=38]'+ escape_markup(app.prestart_dash_title)+'[/font][/size][/color][/b]'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+
+            RelativeLayout:
+                id: central_dashboard_area
+                size_hint: 1, 0.5
+
+                canvas.before:
+                    Color:
+                        rgba:(0.1,0.1,0.1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.width, self.height
+
+
+                BoxLayout:
+                    id: box_2
+                    orientation:  'horizontal'
+                    RelativeLayout:
+                        size_hint: 2.7,1
+                        id: central_lft_dashboard_area
+                        canvas.before:
+                            Color:
+                                rgba:(0.73,0.73,0.73,1)
+                            Rectangle:
+                                pos: root.pos
+                                size: self.width, self.height
+
+
+                        Image:
+                            id: lbl_bell
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/bell_128.png' #freepik
+                            size_hint: 0.2,0.2
+                            pos_hint: {'x': -0.03,'y': 0.72}
+
+                        PSTimerLabel:
+                            id: ps_lbl_timer
+                            markup:True
+                            text: '[font=Aldrich][color=#009688][size=36]'+ escape_markup(self.format_time)+'[/font][/size][/color]'
+                            pos_hint: {'x': 0.02,'y': 0.3}
+
+                        PS_DB_ValueLabel:
+                            id:lbl_temp_meas
+                            text: '[font=Aldrich][color=#FF0000][size=55]'+ escape_markup('{}'.format(root.temp_meas))+'[/font][/size][/color]'
+                            pos_hint: {'x': - 0.65,'y': -0.04}
+
+                        PS_DB_ValueLabel:
+                            id: lbl_decimal_temp
+                            text: '[font=Aldrich][b][color=#FF0000][size=32]'+ escape_markup('.{}'.format(root.temp_meas_decimal))+'[/font][/size][/color][/b]'
+                            pos_hint: {'x': -0.57, 'y': -0.06}
+
+                        PS_DB_ValueLabel:
+                            id:lbl_unit_scale
+                            text: '[font=Aldrich][color=#0c67f0][size=15]'+ escape_markup('{}'.format(app.temp_unit_scale))+'[/font][/size][/color]'
+                            pos_hint: {'x': -0.52,'y': 0.03}
+
+                        Image:
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/heat_room_128.png' #freepik
+                            size_hint: 0.2,0.2
+                            pos_hint: {'x': -0.03,'y': 0.39}
+
+                        PS_DB_ValueLabel:
+                            id:lbl_temp_target
+                            text: '[font=Aldrich][color=#9900FF][size=45]'+ escape_markup('{}'.format(root.temp_target_view))+'[/font][/size][/color]'
+                            pos_hint: {'x': -0.18,'y': -0.04}
+
+                        PS_DB_ValueLabel:
+                            id: lbl_decimal_temp_target
+                            text: '[font=Aldrich][b][color=#9900FF][size=32]'+ escape_markup('.{}'.format(root.temp_target_decimal_view))+'[/font][/size][/color][/b]'
+                            pos_hint: {'x': -0.10, 'y': -0.05}
+
+                        PS_DB_ValueLabel:
+                            id:lbl_unit_scale_target
+                            text: '[font=Aldrich][color=#0c67f0][size=15]'+ escape_markup('{}'.format(app.temp_unit_scale))+'[/font][/size][/color]'
+                            pos_hint: {'x':-0.04,'y': 0.03}
+
+                        PS_DB_ValueLabel:
+                            id: lbl_temp_ext
+                            text: '[font=Aldrich][color=#0000FF][size=25]'+ escape_markup('{:.1f} {}'.format(root.temp_ext, app.temp_unit_scale))+'[/font][/size][/color]'
+                            pos_hint: {'x': -0.62,'y': -0.35}
+
+                        PS_DB_ValueLabel:
+                            id: lbl_cpu_temp
+                            text:
+                                '[font=Aldrich][b][color=#940000][size=10]CPU: '+ escape_markup('{} {}'.format(root.cpu_temp, app.temp_unit_scale))+'[/font][/size][/color][/b]' 
+                            pos_hint: {'x': 0.34,'y': -0.53}
+
+                        PS_DB_ValueLabel:
+                            id: ps_status_code
+                            text:
+                                '[font=Aldrich][b][color=#940000][size=10]I/O STATUS CODE: '+ escape_markup('{}'.format(root.output_status_code))+'[/font][/size][/color][/b]' 
+                            pos_hint: {'x': 0.14,'y': -0.53}
+
+                        ClockLabel:
+                            id: prestart_set_clock
+                            markup: True
+                            text: '[font=Aldrich][b][color=#171717][size=20]'+ escape_markup('{}\n{:^15} {}'.format(self.date_now, self.time_now, self.seconds_now))+'[/font][/size][/color][/b]'
+                            multiline:True
+                            pos_hint: {'x': 0.25, 'y':-0.35}
+
+
+                        PS_IORun_Icon:
+                            id: ps_blink_icon
+                            allow_stretch: False
+                            keep_ratio: True
+                            size_hint: 0.18,0.18
+                            pos_hint: {'x': 0.48,'y': 0.38}
+                            #pixelperfect
+
+                        PS_Power_Icon:
+                            id: ps_power_icon
+                            allow_stretch: False
+                            keep_ratio: True
+                            size_hint: 0.25,0.25
+                            pos_hint: {'x': 0.6,'y': -0.38}
+
+
+
+                        Image:
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/climate_128.png' #freepik
+                            size_hint: 0.2,0.2
+                            pos_hint: {'x': -0.02,'y': 0.06}
+
+
+
+
+
+                    RelativeLayout:
+                        id: central_rgt_dashboard_area
+                        canvas.before:
+                            Color:
+                                rgba:(0.36,0.36,0.36,1)
+                            Rectangle:
+                                pos: root.pos
+                                size: self.width, self.height
+                        Image:
+                            id: ps_img_out_state
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: root.ps_img_out_state
+                            size_hint: 0.8,0.8
+                            pos_hint: {'x': 0.12,'y': 0.25}
+                            anim_delay:0.5
+
+                        IconButton: # invisible button...
+                            allow_stretch: False
+                            keep_ratio: True
+                            source: './Icons/blank_64.png'
+                            size_hint: 0.9, 0.9
+                            pos_hint: {'x': 0,'y': 0}
+                            on_release: app.btn_sound(); app.root.current = 'log_screen'
+
+                        PS_Compressor_Icon:
+                            id: ps_compressor_icon
+                            allow_stretch: False
+                            keep_ratio: True
+                            size_hint: 0.15,0.15
+                            pos_hint: {'x': 0.8,'y': 0.02}
+
+
+                        Label:
+                            id: ps_img_out_label
+                            markup: True
+                            text: '[font=Aldrich][color=#FF9900][size=20]'+ escape_markup(root.ps_img_out_label)+'[/font][/size][/color]'
+                            text_size: self.size
+                            halign: 'center'
+                            valign: 'center'
+                            pos_hint: {'x': 0 ,'y': -0.3}
+                            #flat icons, freepik, smashicons
+
+
+
+            RelativeLayout: # this layout is only a holder for canvas
+                id: ps_graph_layout
+                size_hint: 1,0.35
+                #set cavas.before if you want the temperature target not to be masked by the target line
+                #set canvas.after if you want the target line always on top
+                canvas.after:
+                    Color:
+                        rgba: hex('#aafa93')
+                    Line:
+                        points: root.target_line
+
+                PrestartChart: # is mandatory to set limits!
+                    id: ps_temp_chart
+                    #size_hint:1,0.35
+                    data: root.chart_data
+
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            id: box_3
+
+            RelativeLayout:
+                #size_hint: 0.5,0.5
+                id: rel_3
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: root.width, root.height
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/stop_128.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.65}
+                    on_release:  self.source = './Icons/stop_128.png'; app.root.current = 'prestart_set_screen'
+                    on_press: app.btn_cancel_sound(); self.source = './Icons/stop_128_pressed.png'
+                    #freepik
+
+                IconToggleButton:
+                    id: ps_sound_toggle_btn
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/speaker_64.png' if self.state == 'normal' else  './Icons/speaker_disabled_64.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.4}
+                    on_state: root.restore_audio() if self.state == 'normal' else root.mute_audio()
+                    on_press: app.btn_sound()
+                    #freepik
+
+                IconToggleButton:
+                    id: ps_wifi_toggle_btn
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/wifi2_64.png' if self.state == 'normal' else  './Icons/wifi2_disabled_64.png'
+                    size_hint: 0.15,0.15
+                    pos_hint: {'x': 0.01,'y': 0.15}
+                    on_state: root.switch_wifi(True) if self.state == 'normal' else root.switch_wifi(False)
+                    on_press: app.btn_sound()
+
+
+
+                PS_Cloud_Icon:
+                    id: ps_cloud_icon
+                    allow_stretch: False
+                    keep_ratio: True
+                    size_hint: 0.08,0.07
+                    pos_hint: {'x': 0.08,'y': 0.03}
+
+                PS_Internet_Icon:
+                    id: ps_internet_icon
+                    allow_stretch: False
+                    keep_ratio: True
+                    size_hint: 0.07,0.07
+                    pos_hint: {'x': 0.02,'y': 0.03}
+
+
+                Label:
+                    markup: True
+                    text: '[font=Aldrich][b][color=#32A852][size=15]'+ escape_markup('{}\n{:^10} {}'.format(prestart_set_clock.date_now_short, prestart_set_clock.time_now, prestart_set_clock.seconds_now))+'[/font][/size][/color][/b]'
+                    multiline:True
+                    pos_hint: {'x': -0.42, 'y':0.45}
+
+
+
+    RelativeLayout: #this relative layout is inserted in root widget for line draw design after all
+
+        canvas.after:
+            Color:
+                rgba:(0.36,0.36,0.36,1)
+            Line:
+                points: 0, root.height-root.ids.prestart_dash_title_area.height, root.ids.central_lft_dashboard_area.width,  root.height-root.ids.prestart_dash_title_area.height
+            Line:
+                points: 0, root.height-root.ids.prestart_dash_title_area.height-root.ids.central_lft_dashboard_area.height/3, root.ids.central_lft_dashboard_area.width,  root.height-root.ids.prestart_dash_title_area.height-root.ids.central_lft_dashboard_area.height/3
+            Line:
+                points: 0, root.height-root.ids.prestart_dash_title_area.height-root.ids.central_lft_dashboard_area.height/1.5, root.ids.central_lft_dashboard_area.width,  root.height-root.ids.prestart_dash_title_area.height-root.ids.central_lft_dashboard_area.height/1.5           
+            Line:
+                points: root.width/4,root.height-root.ids.prestart_dash_title_area.height-root.ids.central_lft_dashboard_area.height/1.5, root.width/4,  root.height-root.ids.prestart_dash_title_area.height-root.ids.central_lft_dashboard_area.height

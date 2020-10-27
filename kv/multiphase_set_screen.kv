@@ -1,0 +1,662 @@
+#:kivy 1.11.0
+
+
+<MultiPhaseSetLabel@Label>
+    id: mpsl
+    markup: True
+    text_size: self.size
+    font_size: 15
+    valign: 'center'
+    halign: 'left'
+    padd_hint_y: 0.35         # distance between labels
+    startpos_hint_x: 0.08     # start position labels
+    startpos_hint_y: 0.47
+
+
+<MP_Phase_Button@ToggleButton>:
+    #background_normal: ''
+    background_color: utils.get_color_from_hex('#2E2E2E') if self.state == 'normal' else utils.get_color_from_hex('#00FF00')
+    markup: True
+
+    #text: '[font=Aldrich][b][color=111111][size=20]'+ escape_markup('FASE 1')+'[/font][/size][/color][/b]'
+    text_size: self.size
+    halign: 'center'
+    valign: 'center'
+    size_hint: 1, .4
+    padding_x: 10
+    on_press: app.btn_sound()
+
+
+<MultiPhaseValueLabel@Label>:
+    id: mpvl
+    markup: True
+    text_size: self.size
+    font_size: 35
+    valign: 'center'
+    halign: 'right'
+    padd_hint_x: 0.47      # distance between labels
+    startpos_hint_x: -0.67     # start position labels
+    startpos_hint_y: 0
+
+
+<MP_LongPressButton@LongPressButton>
+    background_normal: ''
+
+    #background_color: utils.get_color_from_hex('#FF9900')
+    size_hint: 0.1,0.7
+    halign: 'center'
+    valign: 'center'
+    markup: True
+    text_size: self.size
+    font_size: 30
+    padd_hint_y: 0.45          # vertical distance between buttons
+    padd_hint_x:  0.37
+    padd_separator_x: 0.12          # horizontal distance between buttons
+    startpos_hint_x: 0.02
+    startpos_hint_y: 0.15    # right position buttons
+         # start position buttons
+    min_symb: '-'               # min symbol
+    plus_symb: '+'              # plus symbol
+    on_press: app.btn_sound()
+
+
+
+<MultiPhase_Set_Screen>:
+    name: 'multiphase_set_screen'
+    id: mp_ss
+    mp_btn1: mp_btn1
+    mp_btn2: mp_btn2
+    mp_btn3: mp_btn3
+    mp_btn4: mp_btn4
+    mp_btn5: mp_btn5
+
+    GridLayout:
+        cols:2
+        size_hint: 1.7,1
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            RelativeLayout:
+                id: mp_header
+                size_hint: 1, 0.15
+
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.width, self.height
+
+                Label:
+                    markup: True
+                    text: '[font=Aldrich][b][color=#980000][size=38]'+ escape_markup(app.multiphase_set_title)+'[/font][/size][/color][/b]'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+
+            GridLayout: # this grid divides central menu settings: buttons on left side, settings temperature / settings duration
+                cols:2  # 2 columns with boxlayout child. Central BoxLayout is divided into 5 "strips" of relativeLayout for convenient label/buttons positioning
+
+                BoxLayout:
+                    id: mp_buttons
+                    orientation:'vertical'
+                    padding: 5
+                    spacing: 5
+                    size_hint: 0.15,1
+                    canvas.before:
+                        Color:
+                            rgba:(0.1,0.1,0.1,1)
+                        Rectangle:
+                            pos: root.pos
+                            size:self.size
+
+
+                    Label:
+                        size_hint:1,0.1
+
+                    MP_Phase_Button:
+                        id: mp_btn1
+                        disabled: True if root.actual_phase >=1  else False
+                        text:
+                            '[font=Aldrich][b][color=#5D5D5D][size=20]'+ escape_markup('{}'.format(app.multiphase_phase1_btn))+'[/font][/size][/color][/b]' if self.state == 'normal' \
+                            else '[font=Aldrich][b][color=#FFFFFF][size=20]'+ escape_markup('{}'.format(app.multiphase_phase1_btn))+'[/font][/size][/color][/b]'
+                        state: 'down'                   #lock phase 1
+                        on_press: self.state ='down'    #lock phase 1
+
+
+
+                    MP_Phase_Button:
+                        id: mp_btn2
+                        disabled: True if mp_btn1.state == 'normal' or root.actual_phase >=2  else False
+                        text:
+                            '[font=Aldrich][b][color=#5D5D5D][size=20]'+ escape_markup('{}'.format(app.multiphase_phase2_btn))+'[/font][/size][/color][/b]' if self.state == 'normal' \
+                            else '[font=Aldrich][b][color=#FFFFFF][size=20]'+ escape_markup('{}'.format(app.multiphase_phase2_btn))+'[/font][/size][/color][/b]'
+                        on_state:  root.reset_phase(2)# event is on_state because reset is also required if button change state and is not directly pressed
+                        on_press: root.increment_duration(2) if root.P2_duration == 0 and self.state == 'down' else root.reset_phase(2)
+
+
+                    MP_Phase_Button:
+                        id: mp_btn3
+                        disabled: True if mp_btn2.state == 'normal' or root.actual_phase >=3 else False
+                        state: 'normal' if mp_btn2.state == 'normal' else self.state
+                        text:
+                            '[font=Aldrich][b][color=#5D5D5D][size=20]'+ escape_markup('{}'.format(app.multiphase_phase3_btn))+'[/font][/size][/color][/b]' if self.state == 'normal' \
+                            else '[font=Aldrich][b][color=#FFFFFF][size=20]'+ escape_markup('{}'.format(app.multiphase_phase3_btn))+'[/font][/size][/color][/b]'
+                        on_state: root.reset_phase(3)
+                        on_press: root.increment_duration(3) if root.P3_duration == 0 and self.state == 'down' else root.reset_phase(3)
+
+                    MP_Phase_Button:
+                        id: mp_btn4
+                        disabled: True if mp_btn3.state == 'normal' or root.actual_phase >=4 else False
+                        state: 'normal' if mp_btn3.state == 'normal' else self.state
+                        text:
+                            '[font=Aldrich][b][color=#5D5D5D][size=20]'+ escape_markup('{}'.format(app.multiphase_phase4_btn))+'[/font][/size][/color][/b]' if self.state == 'normal' \ 
+                            else '[font=Aldrich][b][color=#FFFFFF][size=20]'+ escape_markup('{}'.format(app.multiphase_phase4_btn))+'[/font][/size][/color][/b]'
+                        on_state: root.reset_phase(4)
+                        on_press: root.increment_duration(4) if root.P4_duration == 0 and self.state == 'down' else root.reset_phase(4)
+
+                    MP_Phase_Button:
+                        id: mp_btn5
+                        disabled: True if mp_btn4.state == 'normal' or root.actual_phase >= 5 else False
+                        state: 'normal' if mp_btn4.state == 'normal' else self.state
+                        text:
+                            '[font=Aldrich][b][color=#5D5D5D][size=20]'+ escape_markup('{}'.format(app.multiphase_phase5_btn))+'[/font][/size][/color][/b]' if self.state == 'normal' \
+                            else '[font=Aldrich][b][color=#FFFFFF][size=20]'+ escape_markup('{}'.format(app.multiphase_phase5_btn))+'[/font][/size][/color][/b]'
+                        on_state: root.reset_phase(5)
+                        on_press: root.increment_duration(5) if root.P5_duration == 0 and self.state == 'down' else root.reset_phase(5)
+
+                    ClockLabel:
+                        size_hint: 1, .4
+                        markup: True
+                        text: '[font=Aldrich][b][color=#607D8B][size=11]'+ escape_markup('{}\n{:^10} {}'.format(self.date_now_short, self.time_now, self.seconds_now))+'[/font][/size][/color][/b]'
+                        multiline:True
+                        pos_hint: {'x':0.08, 'y':0.1}
+
+                BoxLayout:
+                    id: mp_central_set_layout
+                    size_hint: 0.85,1
+                    orientation:'vertical'
+                    padding: 5
+                    spacing: 5
+                    canvas.before:
+                        Color:
+                            rgba:(0.1,0.1,0.1,1)
+                        Rectangle:
+                            pos: self.pos
+                            size: self.width, self.height
+
+
+                    RelativeLayout:
+                        id: intestation_central_layout
+                        size_hint:1,0.25
+                        canvas.before:
+                            Color:
+                                rgba:(0.2,0.2,0.2,1)
+                            Rectangle:
+                                pos: root.pos
+                                size: self.width, self.height
+
+
+                        Label:
+                            markup:True
+                            size:self.size
+                            text: '[font=Aldrich][size=13][color=#FFFFFF]'+escape_markup('{} ({}{})'.format(app.multiphase_set_temptarget, chr(173), app.temp_unit_scale))+'[/font][/size][/color]'
+                            pos_hint: {'x':-0.25,'y':-0.10}
+
+
+                        Label:
+                            markup:True
+                            size:self.size
+                            text: '[font=Aldrich][size=13][color=#FFFFFF]'+escape_markup('{} ({})'.format(app.multiphase_set_duration, app.time_unit))+'[/font][/size][/color]'
+                            pos_hint: {'x':0.25,'y':-0.10}
+
+
+
+#------------------------PHASE 1---------------------------------------------------------
+                    RelativeLayout:
+                        id:mp_phase1_rel_lay
+                        canvas.before:
+                            Color:
+                                rgba:(0.08,0.08,0.08,1) if mp_btn1.state  == 'normal' else (0.0,0.45,0.0,1)
+                            Rectangle:
+                                pos: root.pos
+                                size:self.size
+
+                        MP_LongPressButton:
+                            id: f1_mp_temp_incr_btn
+                            disabled: True if root.actual_phase > 1  else False
+                            pos_hint: {'x':self.startpos_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn1.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_temp(1)
+                            on_press:   root.increment_temp(1)
+
+                        MP_LongPressButton:
+                            id: f1_mp_temp_decr_btn
+                            disabled: True if root.actual_phase > 1  else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn1.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_temp(1)
+                            on_press: root.decrement_temp(1)
+
+                        MP_LongPressButton:
+                            id: f1_mp_dur_incr_btn
+                            disabled: True if root.actual_phase > 1  else False
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn1.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_duration(1)
+                            on_press: root.increment_duration(1)
+
+                        MP_LongPressButton:
+                            disabled: True if root.actual_phase > 1  else False
+                            id: f1_mp_dur_decr_btn
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x*2 + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn1.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_duration(1)
+                            on_press: root.decrement_duration(1)
+
+                        MultiPhaseValueLabel:
+                            id:f1_mp_temp_target
+                            text:
+                                '[font=Aldrich][size=32][color=#D98C8C]'+ escape_markup('{:.1f}{}'.format(root.P1_temp_target, chr(176)))+'[/font][/size][/color]' \
+                                if mp_btn1.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x, 'y':self.startpos_hint_y}
+                        MultiPhaseValueLabel:
+                            id:f1_mp_duration
+                            text:
+                                '[font=Aldrich][size=32][color=#B9B9B9]'+ escape_markup('{:.1f}'.format(root.P1_duration))+'[/font][/size][/color]' \
+                                if mp_btn1.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x, 'y':self.startpos_hint_y}
+
+
+
+#------------------------PHASE 2---------------------------------------------------------
+
+                    RelativeLayout:
+                        id:mp_phase2_rel_lay
+                        canvas.before:
+                            Color:
+                                rgba:(0.08,0.08,0.08,1) if mp_btn2.state  == 'normal' else (0.0,0.45,0.0,1)
+                            Rectangle:
+                                pos: root.pos
+                                size:self.size
+
+                        MP_LongPressButton:
+                            id: f2_mp_temp_incr_btn
+                            disabled: True if mp_btn2.state == 'normal' or root.actual_phase > 2 else False
+                            pos_hint: {'x':self.startpos_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn2.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_temp(2)
+                            on_press:   root.increment_temp(2)
+
+
+                        MP_LongPressButton:
+                            id: f2_mp_temp_decr_btn
+                            disabled: True if mp_btn2.state == 'normal' or root.actual_phase > 2 else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn2.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_temp(2)
+                            on_press:   root.decrement_temp(2)
+
+                        MP_LongPressButton:
+                            id: f2_mp_dur_incr_btn
+                            disabled: True if mp_btn2.state == 'normal' or root.actual_phase > 2 else False
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn2.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_duration(2)
+                            on_press:   root.increment_duration(2)
+
+                        MP_LongPressButton:
+                            id: f2_mp_dur_decr_btn
+                            disabled: True if mp_btn2.state == 'normal' or root.actual_phase > 2 else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x*2 + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn2.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_duration(2)
+                            on_press:   root.decrement_duration(2)
+
+                        MultiPhaseValueLabel:
+                            id:f2_mp_temp_target
+                            text:
+                                '[font=Aldrich][size=32][color=#D98C8C]'+ escape_markup('{:.1f}{}'.format(root.P2_temp_target, chr(176)))+'[/font][/size][/color]' \ 
+                                if mp_btn2.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x, 'y':self.startpos_hint_y}
+
+                        MultiPhaseValueLabel:
+                            id:f2_mp_duration
+                            text:
+                                '[font=Aldrich][size=32][color=#B9B9B9]'+ escape_markup('{:.1f}'.format(root.P2_duration))+'[/font][/size][/color]' \
+                                if mp_btn2.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x, 'y':self.startpos_hint_y}
+
+#------------------------PHASE 3---------------------------------------------------------
+
+                    RelativeLayout:
+                        id:mp_phase3_rel_lay
+                        canvas.before:
+                            Color:
+                                rgba:(0.08,0.08,0.08,1) if mp_btn3.state  == 'normal' else (0.0,0.45,0.0,1)
+                            Rectangle:
+                                pos: root.pos
+                                size:self.size
+
+                        MP_LongPressButton:
+                            id: f3_mp_temp_incr_btn
+                            disabled: True if mp_btn3.state == 'normal' or root.actual_phase > 3 else False
+                            pos_hint: {'x':self.startpos_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn3.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_temp(3)
+                            on_press:   root.increment_temp(3)
+
+                        MP_LongPressButton:
+                            id: f3_mp_temp_decr_btn
+                            disabled: True if mp_btn3.state == 'normal' or root.actual_phase > 3 else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn3.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_temp(3)
+                            on_press:   root.decrement_temp(3)
+
+                        MP_LongPressButton:
+                            id: f3_mp_dur_incr_btn
+                            disabled: True if mp_btn3.state == 'normal' or root.actual_phase > 3 else False
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn3.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_duration(3)
+                            on_press:   root.increment_duration(3)
+
+                        MP_LongPressButton:
+                            id: f3_mp_dur_decr_btn
+                            disabled: True if mp_btn3.state == 'normal' or root.actual_phase > 3 else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x*2 + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn3.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_duration(3)
+                            on_press:   root.decrement_duration(3)
+
+                        MultiPhaseValueLabel:
+                            id:f3_mp_temp_target
+                            text:
+                                '[font=Aldrich][size=32][color=#D98C8C]'+ escape_markup('{:.1f}{}'.format(root.P3_temp_target, chr(176)))+'[/font][/size][/color]' \ 
+                                if mp_btn3.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x, 'y':self.startpos_hint_y}
+
+                        MultiPhaseValueLabel:
+                            id:f3_mp_duration
+                            text:
+                                '[font=Aldrich][size=32][color=#B9B9B9]'+ escape_markup('{:.1f}'.format(root.P3_duration))+'[/font][/size][/color]' \
+                                if mp_btn3.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x, 'y':self.startpos_hint_y}
+
+#------------------------PHASE 4---------------------------------------------------------
+
+                    RelativeLayout:
+                        id:mp_phase4_rel_lay
+                        canvas.before:
+                            Color:
+                                rgba:(0.08,0.08,0.08,1) if mp_btn4.state  == 'normal' else (0.0,0.45,0.0,1)
+                            Rectangle:
+                                pos: root.pos
+                                size:self.size
+
+                        MP_LongPressButton:
+                            id: f4_mp_temp_incr_btn
+                            disabled: True if mp_btn4.state == 'normal' or root.actual_phase > 4 else False
+                            pos_hint: {'x':self.startpos_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn4.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_temp(4)
+                            on_press:   root.increment_temp(4)
+
+                        MP_LongPressButton:
+                            id: f4_mp_temp_decr_btn
+                            disabled: True if mp_btn4.state == 'normal' or root.actual_phase > 4 else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn4.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_temp(4)
+                            on_press:   root.decrement_temp(4)
+
+                        MP_LongPressButton:
+                            id: f4_mp_dur_incr_btn
+                            disabled: True if mp_btn4.state == 'normal' or root.actual_phase > 4 else False
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn4.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_duration(4)
+                            on_press:   root.increment_duration(4)
+
+                        MP_LongPressButton:
+                            id: f4_mp_dur_decr_btn
+                            disabled: True if mp_btn4.state == 'normal' or root.actual_phase > 4 else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x*2 + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn4.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_duration(4)
+                            on_press:   root.decrement_duration(4)
+
+                        MultiPhaseValueLabel:
+                            id:f4_mp_temp_target
+                            text:
+                                '[font=Aldrich][size=32][color=#D98C8C]'+ escape_markup('{:.1f}{}'.format(root.P4_temp_target, chr(176)))+'[/font][/size][/color]' \
+                                if mp_btn4.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x, 'y':self.startpos_hint_y}
+
+                        MultiPhaseValueLabel:
+                            id:f4_mp_duration
+                            text:
+                                '[font=Aldrich][size=32][color=#B9B9B9]'+ escape_markup('{:.1f}'.format(root.P4_duration))+'[/font][/size][/color]' \
+                                if mp_btn4.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x, 'y':self.startpos_hint_y}
+
+#------------------------PHASE 4---------------------------------------------------------
+
+                    RelativeLayout:
+                        id:mp_phase5_rel_lay
+                        canvas.before:
+                            Color:
+                                rgba:(0.08,0.08,0.08,1) if mp_btn5.state  == 'normal' else (0.0,0.45,0.0,1)
+                            Rectangle:
+                                pos: root.pos
+                                size:self.size
+
+                        MP_LongPressButton:
+                            id: f5_mp_temp_incr_btn
+                            disabled: True if mp_btn5.state == 'normal' else False
+                            pos_hint: {'x':self.startpos_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn5.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_temp(5)
+                            on_press:   root.increment_temp(5)
+
+                        MP_LongPressButton:
+                            id: f5_mp_temp_decr_btn
+                            disabled: True if mp_btn5.state == 'normal' else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn5.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_temp(5)
+                            on_press:   root.decrement_temp(5)
+
+                        MP_LongPressButton:
+                            id: f5_mp_dur_incr_btn
+                            disabled: True if mp_btn5.state == 'normal' else False
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.plus_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn5.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.increment_duration(5)
+                            on_press:   root.increment_duration(5)
+
+                        MP_LongPressButton:
+                            id: f5_mp_dur_decr_btn
+                            disabled: True if mp_btn5.state == 'normal' else False
+                            pos_hint: {'x':self.startpos_hint_x +self.padd_hint_x*2 + self.padd_separator_x,'y':self.startpos_hint_y}
+                            text: '[font=Aldrich][color=#000000]'+escape_markup(self.min_symb)+'[/font][/color]'
+                            background_color: utils.get_color_from_hex('#2E2E2E') if mp_btn5.state  == 'normal' else utils.get_color_from_hex('#FF9900')
+                            on_long_press: root.decrement_duration(5)
+                            on_press:   root.decrement_duration(5)
+
+                        MultiPhaseValueLabel:
+                            id:f5_mp_temp_target
+                            text:
+                                '[font=Aldrich][size=32][color=#D98C8C]'+ escape_markup('{:.1f}{}'.format(root.P5_temp_target, chr(176)))+'[/font][/size][/color]' \
+                                if mp_btn5.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x, 'y':self.startpos_hint_y}
+
+                        MultiPhaseValueLabel:
+                            id:f5_mp_duration
+                            text:
+                                '[font=Aldrich][size=32][color=#B9B9B9]'+ escape_markup('{:.1f}'.format(root.P5_duration))+'[/font][/size][/color]' \
+                                if mp_btn5.state == 'down' else ''
+                            pos_hint: {'x':self.startpos_hint_x + self.padd_hint_x, 'y':self.startpos_hint_y}
+
+
+                    RelativeLayout:
+                        id:mp_totals_rel_lay
+                        orientation: 'horizontal'
+
+
+                        Label:
+                            markup: True
+                            valign: 'center'
+                            halign: 'left'
+                            text: '[font=Aldrich][size=12][color=#FFFFFF]'+escape_markup('{}'.format(app.multiphase_program_lbl))+'[/font][/size][/color]'
+                            pos_hint: {'x':-0.42, 'y':0.35}
+
+                        Label:
+                            id: lbl_program
+                            markup: True
+                            valign: 'center'
+                            halign: 'center'
+
+                            text: '[font=Aldrich][size=18][color=#747474]'+escape_markup('{}'.format(root.program))+'[/font][/size][/color]'
+                            pos_hint: {'x':-0.25, 'y':-0.1}
+
+
+                        Label:
+                            markup: True
+                            valign: 'center'
+                            halign: 'left'
+                            text: '[font=Aldrich][size=12][color=#FFFFFF]'+escape_markup('{} ({})'.format(app.multiphase_total_lbl, app.time_unit))+'[/font][/size][/color]'
+                            pos_hint: {'x':0.12, 'y':0.35}
+
+
+                        Label:
+                            markup: True
+                            valign: 'center'
+                            halign: 'left'
+                            text: '[font=Aldrich][size=12][color=#FFFFFF]'+escape_markup(app.multiphase_end_lbl)+'[/font][/size][/color]'
+                            pos_hint: {'x':0.33, 'y':0.35}
+
+                        Label:
+                            valign: 'center'
+                            halign: 'left'
+                            id: lbl_time_end
+                            markup: True
+                            text: '[font=Aldrich][size=15][color=#747474]'+escape_markup('{:%d-%b-%y\n   %H:%M}'.format(root.mp_time_end))+'[/font][/size][/color]'
+                            pos_hint: {'x':0.38, 'y':-0.06}
+
+                        Label:
+                            valign: 'center'
+                            halign: 'left'
+                            id: lbl_total_duration
+                            markup: True
+                            text: '[font=Aldrich][size=25][color=#747474]'+escape_markup('{:.2f}'.format(root.mp_total_duration))+'[/font][/size][/color]'
+                            pos_hint: {'x':0.12, 'y':-0.07}
+
+
+
+
+        BoxLayout:
+            id: mp_menu_bar
+            orientation: 'vertical'
+
+            RelativeLayout:
+                #size_hint: 0.5,0.5
+
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: root.width, root.height
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/home_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.69}
+                    on_release:  root.backhome(); app.root.current = 'home_screen'; self.source = './Icons/home_128.png'
+                    on_press: app.btn_cancel_sound(); self.source = './Icons/home_128_pressed.png'
+                    #freepik
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/accept_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.49}
+                    on_release:  root.validate(); app.root.current = 'multiphase_dashboard_screen'; self.source = './Icons/accept_128.png'
+                    on_press: app.btn_ok_sound(); self.source = './Icons/accept_128_pressed.png'
+                    #icongeek26
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/memory-card_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.29}
+                    on_release: app.btn_sound(); self.source = './Icons/memory-card_128.png'; app.root.current = 'save_menu'
+                    on_press: self.source = './Icons/memory-card_128_pressed.png'; root.validate()
+                    #Prosymbols
+
+
+                IconButton:
+                    disabled: True if root.program_is_running == True else False
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/bin_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.09}
+                    on_release:  self.source = './Icons/bin_128.png'
+                    on_press: app.btn_sound(); self.source = './Icons/bin_128_pressed.png'; root.clear_all()
+                    #Kiranshastry
+
+
+                Image:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/slider.png'
+                    size_hint: 0.1,0.1
+                    pos_hint: {'x': 0.06,'y': 0.9}
+
+
+
+    RelativeLayout: #this relative layout is inserted in root widget for line draw design after all
+        canvas.after:
+            Color:
+                rgba:(0.36,0.36,0.36,1)
+            Line:
+                points: 10, root.ids.mp_totals_rel_lay.height*1.1, root.ids.mp_totals_rel_lay.width + root.ids.mp_buttons.width, root.ids.mp_totals_rel_lay.height*1.1
+            Line:
+                points: 10,10, root.ids.mp_totals_rel_lay.width + root.ids.mp_buttons.width,10
+            Line:
+                points: 10,10,10, root.ids.mp_totals_rel_lay.height*1.1
+            Line:
+                points: root.ids.mp_totals_rel_lay.width/5.6,10, root.ids.mp_totals_rel_lay.width/5.6, root.ids.mp_totals_rel_lay.height*1.1
+            Line:
+                points: root.ids.mp_totals_rel_lay.width/1.45, 10, root.ids.mp_totals_rel_lay.width/1.45, root.ids.mp_totals_rel_lay.height*1.1
+            Line:
+                points: root.ids.mp_totals_rel_lay.width/1.05, 10, root.ids.mp_totals_rel_lay.width/1.05, root.ids.mp_totals_rel_lay.height*1.1
+            Line:
+                points: root.ids.mp_totals_rel_lay.width + root.ids.mp_buttons.width, 10, root.ids.mp_totals_rel_lay.width + root.ids.mp_buttons.width, root.ids.mp_totals_rel_lay.height*1.1

@@ -1,0 +1,48 @@
+#:kivy 1.11.0
+#:import utils kivy.utils
+#:import hex kivy.utils.get_color_from_hex
+#:import escape_markup kivy.utils.escape_markup
+
+
+<Info_Screen>:
+    id: info
+    name: 'info_screen'
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        ScrollView:
+            bar_color: .4, .5, .3, .9
+            bar_width: 6
+            do_scroll_x: False
+            RelativeLayout:
+                size_hint: 1, 2
+                BoxLayout:
+                    orientation: 'vertical'
+                    Label:
+                        size_hint: 1,0.1
+                        markup: True
+                        text_size: self.size
+                        pos_hint:{'center_x':0.5, 'y':1}
+                        halign: 'center'
+                        valign: 'center'
+                        id: lbl_fw
+                        text: '[font=Aldrich][b][color=C35F5F][size=18]FIRMWARE VERSION: '+ escape_markup(app.firmware)+'[/font][/size][/color][/b]'
+
+                    Label:
+                        markup: True
+                        text_size: self.size
+                        multiline: True
+                        halign: 'left'
+                        valign: 'top'
+                        id: lbl_info
+                        text: '[color=FFFFFF][size=16]'+ escape_markup(root.info_text)+'[/size][/color]'
+
+        Button:
+            size_hint: 0.2, 0.1
+            pos_hint:{'center_x':0.5, 'y':1}
+            markup: True
+            text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.sm_notification_btn_cancel)+'[/font][/size][/color][/b]'
+            on_press: app.btn_cancel_sound()
+            on_release:  app.root.current = 'home_screen'

@@ -1,0 +1,1 @@
+2020-10-26 08:26:20,969 - app logger - CRITICAL - ConfigModule.py - init_logger : 225 - [ GENERAL LOGGER READY ]

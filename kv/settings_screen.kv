@@ -1,0 +1,532 @@
+#:kivy 1.11.0
+
+
+
+<BoxStripLight@BoxLayout>:
+    id:bsl
+    padding_x:5
+    padding_y:5
+    padding:self.padding_x
+    spacing:5
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgba:(0.27,0.27,0.27,1)
+        Rectangle:
+            pos:  bsl.x+ bsl.padding_x, bsl.y+ bsl.padding_y
+            size: bsl.width-bsl.padding_x*2, bsl.height-bsl.padding_y*2
+
+
+<BoxStripDark@BoxLayout>:
+    id: bsd
+    padding_x:5
+    padding_y:5
+    padding:self.padding_x
+    spacing:5
+    orientation: 'horizontal'
+    canvas.before:
+        Color:
+            rgba:(0.18,0.18,0.18,1)
+        Rectangle:
+            pos:  bsd.x+ bsd.padding_x, bsd.y+ bsd.padding_y
+            size: bsd.width-bsd.padding_x*2, bsd.height-bsd.padding_y*2
+
+<StripLabel@Label>:
+    markup: True
+    text_size: self.size
+    halign: 'left'
+    valign: 'center'
+
+<SetValueLabel@Label>:
+    markup: True
+    text_size: self.size
+    halign: 'center'
+    valign: 'center'
+    size_hint: 0.5,1
+
+<SetSwitch@Switch>
+    #respond touch events only inside the widget
+    #def on_touch_down(self, touch):
+    #    if self.collide_point(*touch.pos):
+    on_touch_down: if self.collide_point(*args[1].pos): app.btn_sound()
+
+<SET_LongPressButton@LongPressButton>
+    background_normal: ''
+    background_color: utils.get_color_from_hex('#FF9900')
+    size_hint: 0.2,1
+    halign: 'center'
+    valign: 'center'
+    markup: True
+    text_size: self.size
+    font_size: 30
+    min_symb: '-'
+    plus_symb: '+'
+    right_symb: '>'
+    left_symb: '<'
+    on_press: app.btn_sound()
+
+<EmptyLabel@Label>:
+    markup: True
+    size_hint: 0.1,1
+    align: 'center'
+    valign: 'center'
+
+
+<Settings_Screen>:
+    name: 'settings_screen'
+    id: set_sc
+    padding_x: 5
+    lbl_set_notify:lbl_set_notify
+    buzzer_switch: buzzer_switch
+    log_switch: log_switch
+    wi_fi_switch: wi_fi_switch
+    cloud_switch: cloud_switch
+    mail_notify_switch: mail_notify_switch
+    sound_slider : sound_slider
+
+    GridLayout:
+        cols:2
+        size_hint: 1.7,1
+
+        BoxLayout:
+            orientation: 'vertical'
+            RelativeLayout:
+                size_hint: 1, 0.14
+                id: settings_title_area
+
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: self.size
+
+                Label:
+
+                    markup: True
+                    text: '[font=Aldrich][b][color=#980000][size=38]'+ escape_markup('{}'.format(app.settings_title))+'[/font][/size][/color][/b]'
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+
+            ScrollView:
+                id: set_scroll
+                bar_color: .4, .5, .3, .9
+                bar_width: 6
+                do_scroll_x: False
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint: 1, 2.5
+
+
+                    BoxStripLight:
+                        id: lang_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_lang)+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_set_lang_plus
+                            text: '[color=#000000]'+escape_markup(self.left_symb)+'[/color]'
+                            on_long_press: root.change_lang(1)
+                            on_press: root.change_lang(1)
+
+                        SetValueLabel:
+                            id: lbl_set_lang
+                            text: '[size=18][color=#00FF00]'+escape_markup('{}'.format(root.language))+'[/size][/color]'
+
+
+                        SET_LongPressButton:
+                            id: btn_set_lang_min
+                            text: '[color=#000000]'+escape_markup(self.right_symb)+'[/color]'
+                            on_long_press: root.change_lang(-1)
+                            on_press: root.change_lang(-1)
+
+                        EmptyLabel:
+
+                    BoxStripDark:
+                        id: scale_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_scale)+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_set_scale_plus
+                            text: '[color=#000000]'+escape_markup(self.left_symb)+'[/color]'
+                            on_long_press: root.change_temp_unit('C')
+                            on_press: root.change_temp_unit('C')
+
+                        SetValueLabel:
+                            id: lbl_set_scale
+                            text: '[size=18][color=#00FF00]'+escape_markup('{}'.format(root.temp_scale))+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_set_scale_min
+                            text: '[color=#000000]'+escape_markup(self.right_symb)+'[/color]'
+                            on_long_press: root.change_temp_unit('F')
+                            on_press: root.change_temp_unit('F')
+
+                        EmptyLabel:
+
+                    BoxStripLight:
+                        id: increment_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_increment_temp)+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_incr_t_plus
+                            text: '[color=#000000]'+escape_markup(self.plus_symb)+'[/color]'
+                            on_long_press: root.change_temp_increment(0.1)
+                            on_press: root.change_temp_increment(0.1)
+
+                        SetValueLabel:
+                            id: lbl_temp_incr
+                            size_hint: 0.5,1
+                            text: '[size=18][color=#00FF00]'+escape_markup('{:.1f}'.format(root.temp_increment))+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_incr_t_min
+                            text: '[color=#000000]'+escape_markup(self.min_symb)+'[/color]'
+                            on_long_press: root.change_temp_increment(-0.1)
+                            on_press: root.change_temp_increment(-0.1)
+
+                        EmptyLabel:
+
+                    BoxStripDark:
+                        id: time_increment_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_increment_time)+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_incr_time_plus
+                            text: '[color=#000000]'+escape_markup(self.plus_symb)+'[/color]'
+                            on_long_press: root.change_time_increment(0.5)
+                            on_press: root.change_time_increment(0.5)
+
+                        SetValueLabel:
+                            id: lbl_time_incr
+                            size_hint: 0.5,1
+                            text: '[size=18][color=#00FF00]'+escape_markup('{:.1f}'.format(root.time_increment))+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_incr_t_min
+                            text: '[color=#000000]'+escape_markup(self.min_symb)+'[/color]'
+                            on_long_press: root.change_time_increment(-0.5)
+                            on_press: root.change_time_increment(-0.5)
+
+                        EmptyLabel:
+
+                    BoxStripLight:
+                        id: offs_int_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_offset_int)+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_offs_int_plus
+                            text: '[color=#000000]'+escape_markup(self.plus_symb)+'[/color]'
+                            on_long_press: root.change_offset('int',0.1)
+                            on_press: root.change_offset('int',0.1)
+
+                        SetValueLabel:
+                            id: lbl_offset_int
+                            size_hint: 0.5,1
+                            text: '[size=18][color=#00FF00]'+escape_markup('{:.1f}'.format(root.int_sens_offset))+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_offs_int_min
+                            text: '[color=#000000]'+escape_markup(self.min_symb)+'[/color]'
+                            on_long_press: root.change_offset('int',-0.1)
+                            on_press: root.change_offset('int',-0.1)
+
+                        EmptyLabel:
+
+                    BoxStripDark:
+                        id: offs_ext_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_offset_ext)+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_offs_ext_plus
+                            text: '[color=#000000]'+escape_markup(self.plus_symb)+'[/color]'
+                            on_long_press: root.change_offset('ext',0.1)
+                            on_press: root.change_offset('ext',0.1)
+
+                        SetValueLabel:
+                            id: lbl_offset_ext
+                            size_hint: 0.5,1
+                            text: '[size=18][color=#00FF00]'+escape_markup('{:.1f}'.format(root.ext_sens_offset))+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_offs_ext_min
+                            text: '[color=#000000]'+escape_markup(self.min_symb)+'[/color]'
+                            on_long_press: root.change_offset('ext', -0.1)
+                            on_press: root.change_offset('ext', -0.1)
+
+                        EmptyLabel:
+
+                    BoxStripLight:
+                        id: id_sens_int
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_id_sens_int)+'[/size][/color]' # label text
+                            size_hint: 0.8,1
+                        CheckBox:
+                            id: chk_enable_id_change
+                            size_hint: 0.2,1
+
+                        SET_LongPressButton:
+                            id: btn_id_sens_int_left
+                            disabled: True if chk_enable_id_change.active == False else False
+                            text: '[color=#000000]'+escape_markup(self.left_symb)+'[/color]'
+                            on_press: root.change_int_sens_id(True)
+
+                        SetValueLabel:
+                            id: lbl_id_sensor
+                            size_hint: 0.5,1
+                            text:
+                                '[size=16][color=#00FF00]'+escape_markup('{}'.format(root.id_sens_int))+'[/size][/color]' if chk_enable_id_change.active == True \
+                                else '[size=16][color=#5c5554]'+escape_markup('{}'.format(root.id_sens_int))+'[/size][/color]'
+
+                        SET_LongPressButton:
+                            id: btn_id_sens_int_right
+                            disabled: True if chk_enable_id_change.active == False else False
+                            text: '[color=#000000]'+escape_markup(self.right_symb)+'[/color]'
+                            on_press: root.change_int_sens_id(False)
+
+                        EmptyLabel:
+
+
+                    BoxStripDark:
+                        id: wifi_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup('{}'.format(app.settings_wifi))+'[/size][/color]'
+                            size_hint: 1, 1 # was 0.6,1 if btn_config_wifi enabled
+
+                        SetSwitch:
+                            id: wi_fi_switch
+                            active: root.wi_fi
+                            on_touch_down: root.clear_notify()
+
+                        EmptyLabel:
+
+                    BoxStripLight:
+                        id: cloud_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup('{}'.format(app.settings_cloud))+'[/size][/color]'
+                            size_hint: 1, 1
+
+                        SetSwitch:
+                            id: cloud_switch
+                            active: root.cloud
+                            on_touch_down: root.clear_notify()
+
+                        EmptyLabel:
+
+
+                    BoxStripDark:
+                        id: log_box
+
+                        EmptyLabel:
+                            size_hint:0.08,1
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_log)+'[/size][/color]'
+
+                        SetSwitch:
+                            id: log_switch
+                            active: root.log
+                            on_touch_down: root.clear_notify()
+                            size_hint:0.35,1
+                        Button:
+                            id: send_log_button
+                            background_color: utils.get_color_from_hex('#36f2f5')
+                            markup: True
+                            halign: 'center'
+                            valign: 'center'
+                            text_size: self.size
+                            text: '[size=14][color=#FFFFFF]'+escape_markup('{}'.format(app.settings_send_btn))+'[/size][/color]'
+                            size_hint: 0.3,1
+                            on_release:  app.btn_sound(); root.ids.set_scroll.scroll_to(lbl_set_notify); root.send_log()
+
+
+                    BoxStripLight:
+                        id: buzzer_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_buzzer)+'[/size][/color]'
+
+                        SetSwitch:
+                            #disabled:   True
+                            id: buzzer_switch
+                            active:  root.buzzer
+                            on_touch_down: root.clear_notify()
+
+                        EmptyLabel:
+
+
+                    BoxStripDark:
+                        id: mail_notify_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup('{}'.format(app.settings_mail_notify))+'[/size][/color]'
+                            size_hint: 1, 1
+
+                        SetSwitch:
+                            id: mail_notify_switch
+                            active: root.cloud
+                            on_touch_down: root.clear_notify()
+
+                        EmptyLabel:
+
+                    BoxStripLight:
+                        id: sound_box
+
+                        EmptyLabel:
+
+                        StripLabel:
+                            text: '[size=18][color=#FFFFFF]'+escape_markup(app.settings_sounds)+'[/size][/color]'
+                            size_hint:0.5,1
+
+
+                        Slider:
+                            id: sound_slider
+                            min: 0
+                            max: 100
+                            step:5
+                            size_hint: 0.7,1
+                            value: 0 if buzzer_switch.active is True else root.sound_slider_mem_volume
+                            sensitivity: 'handle'
+                            on_touch_move: root.check_audio_out()
+
+                        EmptyLabel:
+                            text: '[size=20][color=#FFFFFF]'+escape_markup("{:.0f}".format(sound_slider.value))+'[/size][/color]'
+                            size_hint: 0.5,1
+
+                        Button:
+                            id: btn_test_sound
+                            background_color: utils.get_color_from_hex('#36f2f5')
+                            markup: True
+                            halign: 'center'
+                            valign: 'center'
+                            text_size: self.size
+                            text: '[size=16][color=#FFFFFF]'+escape_markup('{}'.format(app.settings_test_btn))+'[/size][/color]'
+                            size_hint: 0.35,1
+                            on_release: root.test_sound()
+
+
+
+                    BoxStripLight:
+                        size_hint: 1, 2
+                        EmptyLabel:
+                            size_hint: 1,1
+                        Label:
+                            id: lbl_set_notify
+                            markup: True
+                            text_size: self.size
+                            halign: 'center'
+                            valign: 'center'
+                            size_hint: 2.5,1
+
+                        Label:
+                            id:lbl_notify_counter
+                            markup: True
+                            text_size: self.size
+                            halign: 'center'
+                            valign: 'center'
+                            text: root.reboot_counter_str
+
+                        #EmptyLabel:
+
+
+
+
+        BoxLayout:
+            id: settings_menu_bar
+            orientation: 'vertical'
+
+            RelativeLayout:
+                #size_hint: 0.5,0.5
+
+                canvas.before:
+                    Color:
+                        rgba:(1,1,1,1)
+                    Rectangle:
+                        pos: root.pos
+                        size: root.width, root.height
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/home_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.69}
+                    on_release:  app.root.current = 'home_screen'; self.source = './Icons/home_128.png'
+                    on_press: app.btn_cancel_sound(); self.source = './Icons/home_128_pressed.png'
+                    #freepik
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/accept_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.49}
+                    on_release:  self.source = './Icons/accept_128.png'; root.commit(); root.ids.set_scroll.scroll_to(lbl_set_notify)
+                    on_press: app.btn_ok_sound(); self.source = './Icons/accept_128_pressed.png'
+                    #icongeek26
+
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/desktop_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.29}
+                    on_release:  self.source = './Icons/desktop_128.png'; root.app_stop()
+                    on_press: app.btn_sound(); self.source = './Icons/desktop_128_pressed.png';
+                    #Prosymbols
+
+                IconButton:
+
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/bin_128.png'
+                    size_hint: 0.13,0.13
+                    pos_hint: {'x': 0.02,'y': 0.09}
+                    on_release:  self.source = './Icons/bin_128.png'; root.set_default()
+                    on_press: app.btn_sound(); self.source = './Icons/bin_128_pressed.png'
+                    #Kiranshastry
+
+
+                Image:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/slider.png'
+                    size_hint: 0.1,0.1
+                    pos_hint: {'x': 0.06,'y': 0.9}
+
