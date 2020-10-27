@@ -1,5 +1,5 @@
 #################
-fw='1.0.1'
+fw='1.0.11'
 #################
 #Additional sound effects from https://www.zapsplat.com
 
