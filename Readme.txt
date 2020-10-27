@@ -1,4 +1,5 @@
 ################### Dough-O by Marco Neroni 2020 ###################
+######################### www.dougho.com ###########################
 
 Python  3.7.4   www.python.org
 Kivy    1.11.1  www.kivy.org
@@ -7,7 +8,8 @@ This device is intended only for personal/domestic use.
 Software / Hardware modification and redistribution without the author's permission is prohibited.
 
 Requests, suggestions and bugs can be reported to the following email:
-dragonfit@gmail.com
+info@dougho.com
+
 Please contact me if I forgot to credit someone.
 
 Free cool sounds from zapsplat.com in accordance with terms of use.
