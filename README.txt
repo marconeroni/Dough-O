@@ -5,7 +5,7 @@ Python  3.7.4   www.python.org
 Kivy    1.11.1  www.kivy.org
 
 This device is intended only for personal/domestic use.
-Software / Hardware modification and redistribution without the author's permission is prohibited.
+Software / Hardware modification and commercialization without the author's permission is prohibited.
 
 Requests, suggestions and bugs can be reported to the following email:
 info@dougho.com
