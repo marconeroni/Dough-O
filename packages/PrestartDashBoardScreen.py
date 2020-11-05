@@ -131,7 +131,7 @@ class PreStart_DashBoard_Screen(Screen):
 
 
         if self.clockObj is None and Shared.IO_STATUS_CODE.value < 200:
-            self.clockObj=Clock.create_trigger(self.update, 1, True)
+            self.clockObj=Clock.create_trigger(self.update, 0.5, True)
             self.clockObj()
             self.ps_temp_chart.draw()
 

@@ -65,9 +65,9 @@ class ping:
                     self.connected = False
             logger.debug(f"[SUBPROC. PING CALL RETURN VALUE: {sb}")
             self.net_logger_flag = False
-        except Exception as ex:
-            logger.error(ex)
-            if self.net_logger_flag == False: # write once GUI logger
+        except Exception as ex:    
+            if self.net_logger_flag == False: # write once logger
+                logger.error(ex)
                 net_logger.error(ex)
                 self.net_logger_flag = True
                 raise

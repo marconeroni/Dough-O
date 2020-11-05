@@ -121,8 +121,8 @@ class ConfigModule(object):
     HH = -4
     HL = -2
     HL_PWM = -0.5
-    NEG_OFF = -0.5
-    POS_OFF = 0.5
+    NEG_OFF = -0.2
+    POS_OFF = 0.2
     COMP = 1
     ON_PWM = 70
     OFF_PWM = 50
@@ -334,7 +334,7 @@ class ConfigModule(object):
             cls.COMP = float(cls.config['CONTROLLER']['comp'])
             cls.ON_PWM = float(cls.config['CONTROLLER']['on_pwm'])
             cls.OFF_PWM = float(cls.config['CONTROLLER']['off_pwm'])
-            cls.COMP_PROT = float(cls.config['CONTROLLER']['comp_prot'])
+            cls.COMP_PROT = 60*(float(cls.config['CONTROLLER']['comp_prot']))
             if cls.COMP_PROT < 60:
                 cls.COMP_PROT = 60
         except Exception as err:

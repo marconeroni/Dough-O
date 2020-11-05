@@ -16,7 +16,6 @@ class OutStateImage():
 
 
     out_state_mapper =  {
-                            # '0 0 0 --> COMP, LO_h, HI_h
                             0: './Icons/Sleep_anim.zip',
                             1: './Icons/HI_heater_anim.zip',
                             10: './Icons/LO_heater_anim.zip',

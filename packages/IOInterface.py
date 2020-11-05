@@ -342,8 +342,10 @@ class IOInterface(object):
                         cls.HI_heater.off()
                         cls.Compressor.off()
 
-
-                    # neg_off has the same value of HL-PWM because no hysteresis area between them
+                    # when temperature rising into hysteresys area, pwm remains True until NEG_OFF because there is no evaluation case. 
+                    # When temperature falls out from target, outupt remains OFF until it reaches HL_PWM value
+                    # This prevents continuous outputs switching around HL_PWM value 
+                    
                     elif T_meas.value > T_targ.value-abs(ConfigModule.NEG_OFF) and T_meas.value <= T_targ.value + abs(ConfigModule.POS_OFF):
                         cls.reset_output()
                         enable.value = 0

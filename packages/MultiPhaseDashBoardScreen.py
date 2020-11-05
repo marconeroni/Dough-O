@@ -193,7 +193,7 @@ class MultiPhase_DashBoard_Screen(Screen):
         self.program = Shared.PROGRAM[:25]
 
         if self.clockObj is None and Shared.IO_STATUS_CODE.value < 200:
-            self.clockObj=Clock.create_trigger(self.update, 1, True)
+            self.clockObj=Clock.create_trigger(self.update, 0.5, True)
             self.program_is_running = Shared.MP_PROGRAM_IS_RUNNING = True
             self.clockObj()
             self.mp_temp_chart.draw()
