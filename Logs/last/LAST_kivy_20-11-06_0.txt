@@ -1,0 +1,1 @@
+[INFO   ] Logger: Record log in c:\Users\mneroni.INIM\Desktop\Dough-O\Logs\kivy_20-11-06_0.txt

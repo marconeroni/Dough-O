@@ -70,6 +70,8 @@ settings_mail_notify = 'Notifiche mail:'
 settings_send_btn = 'Invia log...'
 settings_test_btn = 'Test'
 settings_mail_ok = 'MAIL INVIATA CON SUCCESSO!'
+settings_notify_backup = 'Backup configurazione eseguito!'
+settings_notify_backup_load = 'Backup correttamente caricato!'
 
 mail_subj_io_state = 'DOUGH-O! ERRORE I/O!'
 mail_header_io_state = 'STATO I/O:'

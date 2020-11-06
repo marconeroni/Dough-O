@@ -183,7 +183,7 @@ class NotifyHelper(EventDispatcher):
                                         f"{app.multiphase_program_lbl.upper()}: {program}\n" +\
                                         f"{app.multiphase_dash_phase}: {Shared.MP_ACTUAL_PHASE.value}\n" +\
                                         f"{app.mail_header_io_state} {io_status_codes.get(io_status_code)}\n" +\
-                                        f"{app.prestart_set_temp_target.upper()}: {temp_target_c} °C / {temp_target_f} °F\n" +\
+                                        f"{app.prestart_set_temp_target.upper()}: {temp_target_c:.1f} °C / {temp_target_f:.1f} °F\n" +\
                                         f"{app.camera_temp_lbl.upper()}: {temp_camera_c:.1f} °C / {temp_camera_f:.1f} °F\n" +\
                                         f"{app.ext_temp_lbl.upper()}: {temp_ext_c:.1f} °C / {temp_ext_f:.1f} °F"
 
@@ -208,7 +208,7 @@ class NotifyHelper(EventDispatcher):
                                         f"{app.multiphase_program_lbl.upper()}: {program}\n"+\
                                         f"{app.multiphase_dash_phase}: {Shared.MP_ACTUAL_PHASE.value}\n" +\
                                         f"{app.mail_header_prgm_state} {prgm_status_codes.get(prgm_status_code)}\n" +\
-                                        f"{app.prestart_set_temp_target.upper()}: {temp_target_c} °C / {temp_target_f} °F\n" +\
+                                        f"{app.prestart_set_temp_target.upper()}: {temp_target_c:.1f} °C / {temp_target_f:.1f} °F\n" +\
                                         f"{app.camera_temp_lbl.upper()}: {temp_camera_c:.1f} °C / {temp_camera_f:.1f} °F\n" +\
                                         f"{app.ext_temp_lbl.upper()}: {temp_ext_c:.1f} °C / {temp_ext_f:.1f} °F"
 
@@ -233,7 +233,7 @@ class NotifyHelper(EventDispatcher):
                                         f"{app.multiphase_program_lbl.upper()}: {program}\n" +\
                                         f"{app.multiphase_dash_phase}: {Shared.MP_ACTUAL_PHASE.value}\n" +\
                                         f"{app.mail_header_power_state} {power_status_codes.get(power_status_code)}\n" +\
-                                        f"{app.prestart_set_temp_target.upper()}: {temp_target_c} °C / {temp_target_f} °F\n" +\
+                                        f"{app.prestart_set_temp_target.upper()}: {temp_target_c:.1f} °C / {temp_target_f:.1f} °F\n" +\
                                         f"{app.camera_temp_lbl.upper()}: {temp_camera_c:.1f} °C / {temp_camera_f:.1f} °F\n" +\
                                         f"{app.ext_temp_lbl.upper()}: {temp_ext_c:.1f} °C / {temp_ext_f:.1f} °F"
 

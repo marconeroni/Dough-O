@@ -68,6 +68,19 @@ class Settings_Screen(Screen):
     standby_timer = None
 
 
+    def load_backup_config(self):
+        try:
+            app = App.get_running_app()
+            ConfigModule.read_config(ConfigModule.config_backup_path)
+            self.ParseConfig()
+            self.lbl_set_notify.text = \
+            '[font=Aldrich][b][color=#ff0339][size=20]'+escape_markup('{}'.format(app.settings_notify_backup_load))+'[/font][/size][/color][/b]'
+        except Exception as ex:
+            err = 'ERROR LOADING BACKUP FILE!'
+            logger.error(f"{err}\n{ex}")
+            self.lbl_set_notify.text = \
+                '[font=Aldrich][b][color=#ff0339][size=15]'+escape_markup('{}'.format(err))+'[/font][/size][/color][/b]'
+
 
     def on_pre_enter(self):
         self.lbl_set_notify.text = ''
@@ -247,7 +260,7 @@ class Settings_Screen(Screen):
         self.sound_slider.value = 1
 
 
-    def commit(self):
+    def commit(self, backup = False):
         self.clear_notify()
         app = App.get_running_app()
         self.__config_dict = {'language':self.language,
@@ -268,7 +281,7 @@ class Settings_Screen(Screen):
         Shared.BUZZ_ENABLE.value = self.buzzer_switch.active
 
         try:
-            ConfigModule.write_config(**self.__config_dict)
+            ConfigModule.write_config(backup, **self.__config_dict)
         except Exception as ex:
             err = 'ERROR WRITING CONFIGURATION FILE!'
             logger.error(f"{err}\n{ex}")
@@ -279,6 +292,11 @@ class Settings_Screen(Screen):
         self.lbl_set_notify.text = \
             '[font=Aldrich][b][color=#ff0339][size=20]'+escape_markup('{}'.format(notify_text.get(ConfigModule.auto_reboot)))+'[/font][/size][/color][/b]'
 
+        if backup == True:
+            self.lbl_set_notify.text = \
+            '[font=Aldrich][b][color=#ff0339][size=20]'+escape_markup('{}'.format(app.settings_notify_backup))+'[/font][/size][/color][/b]'
+            return
+        
         logger.info(f"CONFIG FILE SUCCESSFULLY UPDATED!")
         self.reboot_counter = 0
         if self.reboot_clock is None:

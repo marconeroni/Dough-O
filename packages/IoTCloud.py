@@ -99,7 +99,7 @@ class UbidotsConnect:
                 raise
             
             finally:
-                time.sleep(20)     
+                time.sleep(300)     
 
     # not used
     def get_var(self,device, variable):

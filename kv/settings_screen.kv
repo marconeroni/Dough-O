@@ -108,6 +108,9 @@
                     text_size: self.size
                     halign: 'center'
                     valign: 'center'
+                
+                
+                
 
             ScrollView:
                 id: set_scroll
@@ -529,4 +532,21 @@
                     source: './Icons/slider.png'
                     size_hint: 0.1,0.1
                     pos_hint: {'x': 0.06,'y': 0.9}
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/loading_64.png'
+                    size_hint: 0.08,0.08
+                    pos_hint: {'x': -1,'y': 0.9}
+                    on_release:  self.source = './Icons/loading_64.png'; root.load_backup_config(); root.ids.set_scroll.scroll_to(lbl_set_notify)
+                    on_press: app.btn_ok_sound(); self.source = './Icons/loading_64_pressed.png'
+                
+                IconButton:
+                    allow_stretch: False
+                    keep_ratio: True
+                    source: './Icons/disk_64.png'
+                    size_hint: 0.08,0.08
+                    pos_hint: {'x': -0.9,'y': 0.9}
+                    on_release:  self.source = './Icons/disk_64.png'; root.commit(True); root.ids.set_scroll.scroll_to(lbl_set_notify)
+                    on_press: app.btn_ok_sound(); self.source = './Icons/disk_64_pressed.png'
 

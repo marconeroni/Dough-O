@@ -58,7 +58,10 @@ class ConfigModule(object):
     devices_dir = ''
     cur_dir = Path(__file__)
     app_dir = cur_dir.parents[1]
+    pi_dir = cur_dir.parents[2]
     config_file_path = app_dir / 'config.ini'
+    config_backup_path = pi_dir / 'backup.ini'
+    config_recovery_path = cur_dir.joinpath('recovery.ini')
     sounds_dir = app_dir.joinpath('Sounds')
     event = Event()
 
@@ -151,6 +154,7 @@ class ConfigModule(object):
     def getNETLogger(cls):
         return cls.net_logger
 
+    
 
     @classmethod
     def init_logger(cls):
@@ -160,8 +164,8 @@ class ConfigModule(object):
         log_stream_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(filename)s - %(funcName)s : %(lineno)d - %(message)s")
         log_stream.setFormatter(log_stream_formatter)
         cls.logger.addHandler(log_stream)
-        cls.cur_dir= Path(__file__)             # current dir of config module
-        cls.app_dir = cls.cur_dir.parents[1]
+        #cls.cur_dir= Path(__file__)             # current dir of config module
+        #cls.app_dir = cls.cur_dir.parents[1]
         cls.config_file_path = cls.app_dir / 'config.ini'
         cls.config_recovery_path = cls.cur_dir.joinpath('recovery.ini')
         cls.config.read(f"{cls.config_file_path}", encoding ='utf-8')
@@ -342,8 +346,10 @@ class ConfigModule(object):
             cls.logger.error(f"{err}")
 
     @classmethod
-    def read_config(cls):
+    def read_config(cls, file_path = config_file_path):
         try:
+
+            cls.config.read(f"{file_path}", encoding ='utf-8')
             #set mouse cursor
             show_cursor = cls.config['APP']['show_cursor']
             Config.set('graphics','show_cursor', show_cursor)
@@ -591,7 +597,7 @@ class ConfigModule(object):
 
 
     @classmethod
-    def write_config(cls, **kwargs):
+    def write_config(cls, backup=False,**kwargs):
         try:
             cls.config['APP']['language'] = kwargs['language']
             cls.config['APP']['wi_fi'] = kwargs['wi_fi']
@@ -608,9 +614,12 @@ class ConfigModule(object):
             cls.config['SENSORS']['id_sens_ext'] = kwargs['id_sens_ext']
             cls.config['AUDIO']['sound_volume'] = kwargs['sound_volume']
 
+            if backup == False:
+                conf_path = cls.config_file_path
+            else:
+                conf_path = cls.config_backup_path
 
-
-            with open(cls.config_file_path, 'w', encoding='utf-8') as configfile:
+            with open(conf_path, 'w', encoding='utf-8') as configfile:
                 cls.config.write(configfile)
             cls.read_config()
         except Exception as ex:

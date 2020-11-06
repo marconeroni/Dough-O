@@ -173,6 +173,8 @@ class MainApp(App):
                 settings_send_btn = lm.settings_send_btn
                 settings_test_btn = lm.settings_test_btn
                 settings_mail_ok = lm.settings_mail_ok
+                settings_notify_backup = lm.settings_notify_backup
+                settings_notify_backup_load = lm.settings_notify_backup_load
 
                 mail_subj_io_state = lm.mail_subj_io_state
                 mail_header_io_state = lm.mail_header_io_state

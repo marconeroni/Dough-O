@@ -70,6 +70,9 @@ settings_mail_notify = 'Notifications par email:'
 settings_send_btn = 'Envoyer log...'
 settings_test_btn = 'Tester'
 settings_mail_ok = 'COURRIEL ENVOYÉ AVEC SUCCÈS!'
+settings_notify_backup = 'Sauvegarde de la configuration effectuée!'
+settings_notify_backup_load = 'Sauvegarde correctement chargée!'
+
 
 
 mail_subj_io_state = 'DOUGH-O! ERREUR I/O!'
