@@ -284,9 +284,9 @@ if __name__ == '__main__':
         notify.start_observer()
         if ConfigModule.buzzer == True:
             BuzzController.start_buzzer()
-    
+
     MainApp().run()
-    
+
 
 #snapshot = tracemalloc.take_snapshot()
 #top_stats = snapshot.statistics('lineno')
