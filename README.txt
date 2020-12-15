@@ -5,6 +5,9 @@
 Python  3.7.6   www.python.org
 Kivy    2.0.0   www.kivy.org
 
+The first do-it-yourself retarder proving
+with programmable cycles
+
 This device is intended only for personal/domestic use
 under creative commons license: CC BY-NC-SA 3.0 IT
 https://creativecommons.org/licenses/by-nc-sa/3.0/it/
