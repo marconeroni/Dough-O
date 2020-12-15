@@ -46,7 +46,7 @@ class ChartWidget(RelativeLayout):
             self.grid_line_y = Line(points=[None])
 
             Color(1., .1, 0)
-            self.signal_line = Line(points=None)
+            self.signal_line = Line(points=None, width = 1.2)
 
 
         Clock.schedule_once(self.drawbackground)

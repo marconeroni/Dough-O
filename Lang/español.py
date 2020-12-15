@@ -10,7 +10,7 @@ prestart_set_start = 'inicio'
 prestart_dash_title = 'ENCENDIDO PROGRAMADO'
 
 time_unit = 'horas'
-camera_temp = 'temperatura de la cámara'
+chamber_temp = 'temperatura de la cámara'
 ext_temp = 'temperatura externa'
 no_program = 'NO HAY PROGRAMAS ACTIVOS'
 
@@ -96,7 +96,7 @@ io_50 = 'PROTECCIÓN DEL COMPRESOR'
 
 prgm_0 =  'DESACTIVADO'
 prgm_100 = 'PROGRAMA EN ESPERA'
-prgm_110 = 'PROGRAMA INICIADO'
+prgm_110 = 'PROGRAMA / FASE INICIADA'
 prgm_120 = 'CAMBIAR FASE'
 prgm_130 = 'PROGRAMA BLOQUEADO'
 prgm_150 = 'PROGRAMA TERMINADO'

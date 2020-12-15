@@ -1,1 +1,0 @@
-2020-11-07 23:27:38,096 - app logger - CRITICAL - ConfigModule.py - init_logger : 236 - [ GENERAL LOGGER READY ]

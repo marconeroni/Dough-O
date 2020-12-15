@@ -1,19 +1,20 @@
 
 import locale
 import configparser
-import glob
+#import glob
 import os
 import logging
 import subprocess
-import time
+#import time
 import shutil
+import sys
 
 
 
 from sys import stdout
 from sys import platform
 from pathlib import Path
-from datetime import datetime
+#from datetime import datetime
 from kivy.config import Config
 from threading import Thread, Event
 from zipfile import ZipFile
@@ -58,6 +59,7 @@ class ConfigModule(object):
     devices_dir = ''
     cur_dir = Path(__file__)
     app_dir = cur_dir.parents[1]
+    prog_path = cur_dir.parents[2] / 'Programs'
     pi_dir = cur_dir.parents[2]
     config_file_path = app_dir / 'config.ini'
     config_backup_path = pi_dir / 'backup.ini'
@@ -67,7 +69,7 @@ class ConfigModule(object):
 
 
     localization = ''
-    language = 'italiano'
+    language = 'english'
     lang_files = []
     temp_scale = 'C'
     int_sens_offset= 0.0
@@ -86,7 +88,7 @@ class ConfigModule(object):
     auto_reboot = True
     ups_shutdown = 60
     # Other config values
-    show_cursor = 1
+    show_cursor = False
     _devices = '/sys/bus/w1/devices/'
     _log = '/home/pi/Dough-O/Logs/'
 
@@ -130,7 +132,7 @@ class ConfigModule(object):
     HL = -2
     HL_PWM = -0.5
     NEG_OFF = -0.2
-    POS_OFF = 0.2
+    POS_OFF = 0.5
     COMP = 1
     ON_PWM = 70
     OFF_PWM = 50
@@ -171,10 +173,7 @@ class ConfigModule(object):
         log_stream_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(filename)s - %(funcName)s : %(lineno)d - %(message)s")
         log_stream.setFormatter(log_stream_formatter)
         cls.logger.addHandler(log_stream)
-        #cls.cur_dir= Path(__file__)             # current dir of config module
-        #cls.app_dir = cls.cur_dir.parents[1]
-        #cls.config_file_path = cls.app_dir / 'config.ini'
-        #cls.config_recovery_path = cls.cur_dir.joinpath('recovery.ini')
+
         #cls.config.read(f"{cls.config_file_path}", encoding ='utf-8')
 
 
@@ -360,8 +359,8 @@ class ConfigModule(object):
             if len(data)== 0:
                 raise Exception('ERROR! MISSING OR CORRUPTED CONFIG FILE!')
             #set mouse cursor
-            show_cursor = cls.config['APP']['show_cursor']
-            Config.set('graphics','show_cursor', show_cursor)
+            cls.show_cursor = cls.to_bool(cls.config['APP']['show_cursor'])
+            Config.set('graphics','show_cursor', cls.show_cursor)
             #cls.localization = cls.config['LOCALE']['locale']
             cls.mockup = cls.to_bool(cls.config['APP']['mockup'])
             cls.language = cls.config['APP']['language']
@@ -421,7 +420,7 @@ class ConfigModule(object):
             cls.end_program_audio = cls.config['AUDIO']['end_program']
             cls.cross_phase_audio = cls.config['AUDIO']['cross_phase']
             cls.warning_audio = cls.config['AUDIO']['warning']
-            cls.alert_audio = cls.config['AUDIO']['alert']
+            #cls.alert_audio = cls.config['AUDIO']['alert']
             cls.io_interface = cls.to_bool(cls.config['APP']['io_interface'])
             # store path values independent from platform
             cls.config['PATHS']['devices'] = ConfigModule._devices
@@ -441,6 +440,24 @@ class ConfigModule(object):
         trust = cls.list_devices()
         if trust == True: cls.check_sensors()
 
+
+    @classmethod
+    #check config file and copy from recovery path if not exists
+    #check Programs directory and creates it if does not exists
+    def check_config(cls):
+        cur_dir= Path(__file__)
+        app_dir = cur_dir.parents[1]
+        config_recovery_path = cls.app_dir / 'Recovery' / 'config.ini'
+        config_file = cls.app_dir / 'config.ini'
+        if not config_file.is_file():
+            try:
+                shutil.copy2(str(config_recovery_path), str(config_file))
+                os.execv(sys.executable, ['python'] + sys.argv) #is necessary to restart python application after copy
+            except Exception as ex:
+                print("error in check_config:", ex)
+        
+        
+        cls.prog_path.mkdir(mode=0o777, parents=False, exist_ok=True)
 
     @classmethod # is mandatory to check strength signal after enable
     def switch_wifi(cls, enable):
@@ -635,7 +652,7 @@ class ConfigModule(object):
             cls.config['APP']['io_interface'] = str(cls.io_interface)
             cls.config['APP']['show_cursor'] = str(cls.show_cursor)
             cls.config['APP']['auto_reboot'] = str(cls.auto_reboot)
-            cls.config['APP']['ups_shutdown'] = str(int(cls.ups_shutdown/60))
+            cls.config['APP']['ups_shutdown'] = str(int(cls.ups_shutdown))
             cls.config['SMTP']['mail_sender'] = cls.mail_sender
             cls.config['SMTP']['mail_receiver'] = cls.mail_receiver
             cls.config['SMTP']['host'] = cls.host
@@ -673,7 +690,7 @@ class ConfigModule(object):
             cls.config['CONTROLLER']['off_pwm'] = f"{cls.OFF_PWM:.1f}"
             cls.config['CONTROLLER']['comp_prot'] = f"{cls.COMP_PROT:.1f}"
             cls.config['AUDIO']['card_num'] = cls.card_num
-            cls.config['AUDIO']['num_id'] = cls.numid
+            cls.config['AUDIO']['numid'] = cls.numid
             cls.config['AUDIO']['sound_volume'] = str(cls.sound_volume)
             cls.config['AUDIO']['button'] = cls.button_audio
             cls.config['AUDIO']['button_ok'] = cls.button_ok_audio
@@ -682,7 +699,7 @@ class ConfigModule(object):
             cls.config['AUDIO']['end_program'] = cls.end_program_audio
             cls.config['AUDIO']['cross_phase'] = cls.cross_phase_audio
             cls.config['AUDIO']['warning'] = cls.warning_audio
-            cls.config['AUDIO']['alert'] = cls.alert_audio
+            #cls.config['AUDIO']['alert'] = cls.alert_audio
 
             if backup == False:
                 conf_path = cls.config_file_path

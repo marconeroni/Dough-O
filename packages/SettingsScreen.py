@@ -70,7 +70,7 @@ class Settings_Screen(Screen):
 
     def load_backup_config(self):
         try:
-            print(ConfigModule.config_backup_path)
+            #print(ConfigModule.config_backup_path)
             app = App.get_running_app()
             ConfigModule.read_config(ConfigModule.config_backup_path)
             self.ParseConfig()
@@ -246,7 +246,7 @@ class Settings_Screen(Screen):
 
     def set_default(self):
         self.clear_notify()
-        self.language = 'italiano'
+        self.language = 'english'
         self.temp_scale = self.__temp_scale['C']
         self.int_sens_offset  = 0.0
         self.ext_sens_offset  = 0.0

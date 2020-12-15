@@ -1,7 +1,7 @@
 #################
-fw='1.0.1'
+fw='1.0.0'
 #################
-#Additional sound effects from https://www.zapsplat.com
+
 
 #import tracemalloc
 #tracemalloc.start()
@@ -10,6 +10,7 @@ import os
 from types import ModuleType
 os.environ['KIVY_AUDIO'] = 'sdl2'
 from packages.ConfigModule import ConfigModule
+ConfigModule.check_config()
 ConfigModule.init_logger()
 ConfigModule.read_config() # important!!: read config BEFORE all imports !!!!!!
 
@@ -121,7 +122,7 @@ class MainApp(App):
                 prestart_set_temp_target = lm.prestart_set_temp_target [:25]
                 prestart_set_start = lm.prestart_set_start [:27]
                 prestart_dash_title = lm.prestart_dash_title [:27]
-                camera_temp_lbl = lm.camera_temp[:25]
+                chamber_temp_lbl = lm.chamber_temp[:25]
                 ext_temp_lbl = lm.ext_temp[:25]
 
 
@@ -222,7 +223,7 @@ class MainApp(App):
             except Exception as ex:
                 print(ex)
                 logger.error(ex)
-                lm = importlib.import_module('.'.join(['Lang', 'backup','italiano'])) #subfolders are specified with 'dot' in module import
+                lm = importlib.import_module('.'.join(['Lang', 'backup','english'])) #subfolders are specified with 'dot' in module import
 
 #--------------- END OF LANGUAGE STRING LABELS ASSIGNMENT-----
 

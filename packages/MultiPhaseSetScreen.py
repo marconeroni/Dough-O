@@ -84,7 +84,7 @@ class MultiPhase_Set_Screen(Screen):
     def on_pre_enter(self):
 
         self.actual_phase = Shared.MP_ACTUAL_PHASE.value
-        self.phase_temp_target_dict[Shared.MP_ACTUAL_PHASE.value] = Shared.ACTUAL_TEMP_TARGET.value
+        #self.phase_temp_target_dict[Shared.MP_ACTUAL_PHASE.value] = Shared.ACTUAL_TEMP_TARGET.value
 
         self.program = Shared.PROGRAM[:25]
         self.program_is_running = Shared.MP_PROGRAM_IS_RUNNING # bool
@@ -127,6 +127,12 @@ class MultiPhase_Set_Screen(Screen):
 
 
     def decrement_duration(self, _phase):
+        #if the program is running and the remaining time is less than the minimum set, it is no longer possible to reduce the duration
+        if Shared.MP_REMAINING_TIME <= self.increment*3600 \
+            and self.phase_duration_dict.get(f"{_phase}")<= self.increment*2 \
+            and str(_phase) == Shared.MP_ACTUAL_PHASE.value \
+            and Shared.MP_PROGRAM_IS_RUNNING==True:
+                return
         self.phase_duration_dict= {k:(v-self.increment if k==str(_phase) and v > self.mindur+ self.increment else v) for (k,v) in self.phase_duration_dict.items() }
         self.validate()
 

@@ -11,9 +11,9 @@ class OutStateImage():
     #               100: ---> Compressor ON
     #               200: ---> generic error in reading
     #               201: ---> temperature out of range
-    #               301: ---> error reading camera sensor
+    #               301: ---> error reading chamber sensor
     #               302: ---> error reading external sensor
-
+    #               603: ---> error reading both sensors
 
     out_state_mapper =  {
                             0: './Icons/Sleep_anim.zip',

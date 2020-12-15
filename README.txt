@@ -1,18 +1,20 @@
-################### Dough-O by Marco Neroni 2020 ###################
+################### Dough-O! by Marco Neroni 2020 ###################
 ######################### www.dougho.com ###########################
 
-Python  3.7.4   www.python.org
+Python  3.7.6   www.python.org
 Kivy    1.11.1  www.kivy.org
 
-This device is intended only for personal/domestic use.
-Software / Hardware modification and commercialization without the author's permission is prohibited.
+This device is intended only for personal/domestic use
+under creative commons license: CC BY-NC-SA 3.0 IT
+https://creativecommons.org/licenses/by-nc-sa/3.0/it/
+
 
 Requests, suggestions and bugs can be reported to the following email:
 info@dougho.com
 
 Please contact me if I forgot to credit someone.
 
-Free cool sounds from zapsplat.com in accordance with terms of use.
+Sound effects downloaded from zapsplat.com in accordance with terms of use.
 
 Other free sounds from soundbible.com in accordance with terms of use:
 

@@ -1,4 +1,4 @@
-locale_linux = 'fr_FR'
+locale_linux = 'fr_FR.UTF-8'
 locale_win = 'fr-FR' # for Windows
 btn_main_prestart = 'Allumage\nprogrammé'
 btn_main_multiphase = 'Cycle\nmultiphase'
@@ -10,7 +10,7 @@ prestart_set_start = 'démarrage'
 prestart_dash_title = 'ALLUMAGE PROGRAMME'
 
 time_unit = 'heures'
-camera_temp = 'témperature de la chambre'
+chamber_temp = 'témperature de la chambre'
 ext_temp = 'témperature extérieure'
 no_program = 'PAS DE PROGRAMME ACTIF'
 
@@ -97,7 +97,7 @@ io_50 = 'PROTECTION DU COMPRESSEUR'
 
 prgm_0 =  'DÉSACTIVÉE'
 prgm_100 = 'EN ATTENTE DE PROGRAMME'
-prgm_110 = 'PROGRAMME DÉMARRÉ'
+prgm_110 = 'PROGRAMME/PHASE DÉMARRÉ'
 prgm_120 = 'CHANGER DE PHASE'
 prgm_130 ='PROGRAMME ARRÊTÉ'
 prgm_150 ='PROGRAMME TERMINÉ'

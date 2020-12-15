@@ -34,8 +34,9 @@ io_logger = ConfigModule.getIOLogger()
     #               100: ---> Compressor ON
     #               200: ---> generic error in reading
     #               201: ---> temperature out of range
-    #               301: ---> error reading camera sensor
+    #               301: ---> error reading chamber sensor
     #               302: ---> error reading external sensor
+    #               603: ---> error reading both sensors
 
 
 #-------------- POWER STATUS CODES:
@@ -68,9 +69,9 @@ class IOInterface(object):
     Red_LED = LED(16)       #RED
     Green_LED = LED(20)     #GREEN
     Blue_LED = LED(21)      #BLUE
-    Active_LED = LED(5)     #STATUS
-    #RGB LED status pin GREEN --> +5V
-    #connect to RED pin of RGB active LED
+    Power_LED = LED(5)     #POWER
+    #RGB LED power pin GREEN --> +5V
+    #connect to RED pin of RGB power LED
 
     if ConfigModule.mockup == True:
 
@@ -99,7 +100,7 @@ class IOInterface(object):
     io_status_codes = { 0: 'OK',
                         200: 'GENERIC ERROR IN READING',
                         201: 'TEMPERATURE OUT OF RANGE',
-                        301: 'ERROR READING CAMERA SENSOR',
+                        301: 'ERROR READING CHAMBER SENSOR',
                         302: 'ERROR READING EXTERNAL SENSOR',
                         603: "ERROR READING BOTH SENSORS",
                         50: 'COMPRESSOR PROTECTION RUNNING'
@@ -219,14 +220,14 @@ class IOInterface(object):
                             (discard, sep, reading) = data_int.partition(' t=')
                             temp = float(reading) / 1000.0
                             T_meas.value = temp + ConfigModule.int_sens_offset
-                            logger.info(f"CAMERA TEMPERATURE: {T_meas.value} C")
+                            logger.info(f"CHAMBER TEMPERATURE: {T_meas.value} C")
                             #if status_code.value <=200: status_code.value = 0
                             if temp >= 85:
                                 if retries >=5:
                                     status_code.value = 301
                                     enable.value = 0
                                     cls.reset_output()
-                                    logger.error(f"STATUS CODE: {status_code.value}, CAMERA MEASURE: {T_meas.value}")
+                                    logger.error(f"STATUS CODE: {status_code.value}, CHAMBER MEASURE: {T_meas.value}")
                                     io_logger.error(f"ERROR {status_code.value}: {cls.io_status_codes.get(status_code.value)}")
                                     cls.stop_check_sensor_1 = True
                             else:
@@ -237,7 +238,7 @@ class IOInterface(object):
                                 T_meas.value = 85
                                 enable.value = 0
                                 cls.reset_output()
-                                logger.error(f"STATUS CODE: {status_code.value}, CAMERA MEASURE: {T_meas.value}")
+                                logger.error(f"STATUS CODE: {status_code.value}, CHAMBER MEASURE: {T_meas.value}")
                                 io_logger.error(f"ERROR {status_code.value}: {cls.io_status_codes.get(status_code.value)}")
                                 cls.stop_check_sensor_1 = True
 
@@ -300,10 +301,11 @@ class IOInterface(object):
                     enable.value = 0
                     cls.reset_output()
 
-                if status_code.value <=200:
-                    cls.Active_LED.off()
+
+                if status_code.value <=200 and power_status.value <300:
+                    cls.Power_LED.off()
                 else:
-                    cls.Active_LED.blink(0.5,0.5)
+                    cls.Power_LED.blink(0.5,0.5)
 
         #------------ CODE EXECUTION WHEN ENABLED ----------------------------------------------------
 
@@ -342,10 +344,10 @@ class IOInterface(object):
                         cls.HI_heater.off()
                         cls.Compressor.off()
 
-                    # when temperature rising into hysteresys area, pwm remains True until NEG_OFF because there is no evaluation case. 
+                    # when temperature rising into hysteresys area, pwm remains True until NEG_OFF because there is no evaluation case.
                     # When temperature falls out from target, outupt remains OFF until it reaches HL_PWM value
-                    # This prevents continuous outputs switching around HL_PWM value 
-                    
+                    # This prevents continuous outputs switching around HL_PWM value
+
                     elif T_meas.value > T_targ.value-abs(ConfigModule.NEG_OFF) and T_meas.value <= T_targ.value + abs(ConfigModule.POS_OFF):
                         cls.reset_output()
                         enable.value = 0

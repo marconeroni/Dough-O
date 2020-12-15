@@ -21,8 +21,8 @@ class LoadFromMemory_Screen(Screen):
     btns_disabled = BooleanProperty(True)
     standby_timer = None
 
-    rp = str(Path(ConfigModule.app_dir.joinpath('Programs')).resolve(strict=False))
-
+    #rp = str(Path(ConfigModule.app_dir.joinpath('Programs')).resolve(strict=False))
+    rp = str(Path(ConfigModule.prog_path).resolve(strict=False))
     rootpath = StringProperty(rp)
 
     prog_preview = StringProperty('')

@@ -48,8 +48,8 @@ class SaveMenu_Screen(Screen):
     notes_text_input = ObjectProperty(None)
 
     #rp = rootpath
-    rp = str(pathlib.Path(ConfigModule.app_dir.joinpath('Programs')).resolve(strict=False)) 
-
+    #rp = str(pathlib.Path(ConfigModule.app_dir.joinpath('Programs')).resolve(strict=False)) 
+    rp = str(pathlib.Path(ConfigModule.prog_path).resolve(strict=False))
     rootpath = StringProperty(rp)
 
     program = '' # string stream to save in txt
@@ -58,6 +58,7 @@ class SaveMenu_Screen(Screen):
 
     def on_enter(self):
         Shared.MEM_SCREEN.value = 7
+        self.clear_fields()
         self.save_filechooser.rootpath = self.rootpath
         self.save_filechooser._update_files()
         self.btns_disabled = False

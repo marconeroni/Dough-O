@@ -178,12 +178,8 @@ class MultiPhase_DashBoard_Screen(Screen):
 
         self.time_end = Shared.MP_TIME_END.strftime("%d/%b/%y %H:%M:%S")
         self.program_is_running = Shared.MP_PROGRAM_IS_RUNNING = True
-
         self.lbl_timer.duration = self.actual_phase_duration = Shared.MP_ACTUAL_PHASE_DURATION.value = Shared.MP_DURATION_DICT.get(str(self.lbl_timer.phase))
         Shared.ACTUAL_TEMP_TARGET.value = Shared.MP_TEMP_TARGET_DICT.get(str(self.lbl_timer.phase))
-        #Shared.MP_TIMER_BEGIN = self.lbl_timer.time_begin
-        #self.lbl_timer.time_begin=Shared.MP_TIMER_BEGIN
-
         actual_temp_target_view = self.tc.convert_only_F(Shared.ACTUAL_TEMP_TARGET.value, ConfigModule.temp_scale)
         self.actual_temp_target = self.fs.convert(actual_temp_target_view)[0]
         self.actual_temp_target_decimal = self.fs.convert(actual_temp_target_view)[1]
@@ -355,7 +351,10 @@ class MultiPhase_DashBoard_Screen(Screen):
         self.temp_meas_decimal = self.fs.convert(temp_meas)[1]
         self.temp_ext = self.tc.convert_only_F(Shared.TEMP_EXT.value, ConfigModule.temp_scale)
         self.output_status_code = Shared.IO_STATUS_CODE.value
-
+        Shared.ACTUAL_TEMP_TARGET.value = Shared.MP_TEMP_TARGET_DICT.get(str(self.lbl_timer.phase))
+        actual_temp_target_view = self.tc.convert_only_F(Shared.ACTUAL_TEMP_TARGET.value, ConfigModule.temp_scale)
+        self.actual_temp_target = self.fs.convert(actual_temp_target_view)[0]
+        self.actual_temp_target_decimal = self.fs.convert(actual_temp_target_view)[1]
 
         self.mp_chart_data = Shared.TEMP_MEAS.value
 

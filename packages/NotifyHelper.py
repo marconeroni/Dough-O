@@ -101,7 +101,7 @@ class NotifyHelper(EventDispatcher):
 #io_100 =       'COMPRESSOR ON'
 #io_200 =       'GENERIC ERROR IN READING'
 #io_201 =       'TEMPERATURE OUT OF RANGE'
-#io_301 =       'ERROR READING CAMERA SENSOR'
+#io_301 =       'ERROR READING CHAMBER SENSOR'
 #io_302 =       'ERROR READING EXTERNAL SENSOR'
 #io_603 =       'ERROR READING BOTH SENSORS'
 #io_50 =        'COMPRESSOR PROTECTION RUNNING'
@@ -170,12 +170,12 @@ class NotifyHelper(EventDispatcher):
             time_now = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
             temp_target_c = Shared.ACTUAL_TEMP_TARGET.value
             temp_target_f = self.tc.c_to_f(Shared.ACTUAL_TEMP_TARGET.value)
-            temp_camera_c = Shared.TEMP_MEAS.value
-            temp_camera_f = self.tc.c_to_f (Shared.TEMP_MEAS.value)
+            temp_chamber_c = Shared.TEMP_MEAS.value
+            temp_chamber_f = self.tc.c_to_f (Shared.TEMP_MEAS.value)
             temp_ext_c = Shared.TEMP_EXT.value
             temp_ext_f = self.tc.c_to_f (Shared.TEMP_EXT.value)
             program = Shared.PROGRAM
-            program_details = Shared.PROGRAM_DETAILS.value
+            #program_details = Shared.PROGRAM_DETAILS.value
 
             if io_status_code >=200:
 
@@ -184,7 +184,7 @@ class NotifyHelper(EventDispatcher):
                                         f"{app.multiphase_dash_phase}: {Shared.MP_ACTUAL_PHASE.value}\n" +\
                                         f"{app.mail_header_io_state} {io_status_codes.get(io_status_code)}\n" +\
                                         f"{app.prestart_set_temp_target.upper()}: {temp_target_c:.1f} °C / {temp_target_f:.1f} °F\n" +\
-                                        f"{app.camera_temp_lbl.upper()}: {temp_camera_c:.1f} °C / {temp_camera_f:.1f} °F\n" +\
+                                        f"{app.chamber_temp_lbl.upper()}: {temp_chamber_c:.1f} °C / {temp_chamber_f:.1f} °F\n" +\
                                         f"{app.ext_temp_lbl.upper()}: {temp_ext_c:.1f} °C / {temp_ext_f:.1f} °F"
 
                 mail_subject = app.mail_subj_io_state
@@ -202,14 +202,15 @@ class NotifyHelper(EventDispatcher):
 
 
 
-            if prgm_status_code >=100:
+            if prgm_status_code >=100 and prgm_status_code!=120: #is better to do not send mail on change phase
 
                 prgm_state_mail_body =  f"{time_now}\n{screen_name.get(Shared.MEM_SCREEN.value)}\n" +\
                                         f"{app.multiphase_program_lbl.upper()}: {program}\n"+\
-                                        f"{app.multiphase_dash_phase}: {Shared.MP_ACTUAL_PHASE.value}\n" +\
+                                        (f"{app.multiphase_dash_phase}: {Shared.MP_ACTUAL_PHASE.value}\n" +\
+                                        f"{app.multiphase_set_duration.upper()}: {Shared.MP_ACTUAL_PHASE_DURATION.value:.1f} {app.time_unit}\n" if prgm_status_code < 130 else '') +\
                                         f"{app.mail_header_prgm_state} {prgm_status_codes.get(prgm_status_code)}\n" +\
                                         f"{app.prestart_set_temp_target.upper()}: {temp_target_c:.1f} °C / {temp_target_f:.1f} °F\n" +\
-                                        f"{app.camera_temp_lbl.upper()}: {temp_camera_c:.1f} °C / {temp_camera_f:.1f} °F\n" +\
+                                        f"{app.chamber_temp_lbl.upper()}: {temp_chamber_c:.1f} °C / {temp_chamber_f:.1f} °F\n" +\
                                         f"{app.ext_temp_lbl.upper()}: {temp_ext_c:.1f} °C / {temp_ext_f:.1f} °F"
 
                 mail_subject = app.mail_subj_prgm_state
@@ -234,7 +235,7 @@ class NotifyHelper(EventDispatcher):
                                         f"{app.multiphase_dash_phase}: {Shared.MP_ACTUAL_PHASE.value}\n" +\
                                         f"{app.mail_header_power_state} {power_status_codes.get(power_status_code)}\n" +\
                                         f"{app.prestart_set_temp_target.upper()}: {temp_target_c:.1f} °C / {temp_target_f:.1f} °F\n" +\
-                                        f"{app.camera_temp_lbl.upper()}: {temp_camera_c:.1f} °C / {temp_camera_f:.1f} °F\n" +\
+                                        f"{app.chamber_temp_lbl.upper()}: {temp_chamber_c:.1f} °C / {temp_chamber_f:.1f} °F\n" +\
                                         f"{app.ext_temp_lbl.upper()}: {temp_ext_c:.1f} °C / {temp_ext_f:.1f} °F"
 
                 mail_subject = app.mail_subj_power_state
