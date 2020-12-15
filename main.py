@@ -278,12 +278,12 @@ if __name__ == '__main__':
     multiprocessing.freeze_support()
     Shared.BUZZ_ENABLE.value = ConfigModule.buzzer
     # Enable Processes only if no errors are detected in configuration and I/O interface is enabled via config  
-    #if ConfigModule.exception_string == '' and ConfigModule.io_interface == True:
-        #IOInterface.start_io_interface()
-        #notify = NotifyHelper()
-        #notify.start_observer()
-        #if ConfigModule.buzzer == True:
-            #BuzzController.start_buzzer()
+    if ConfigModule.exception_string == '' and ConfigModule.io_interface == True:
+        IOInterface.start_io_interface()
+        notify = NotifyHelper()
+        notify.start_observer()
+        if ConfigModule.buzzer == True:
+            BuzzController.start_buzzer()
     
     MainApp().run()
     
