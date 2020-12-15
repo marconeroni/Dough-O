@@ -2,7 +2,7 @@
 ######################### www.dougho.com ###########################
 
 Python  3.7.6   www.python.org
-Kivy    1.11.1  www.kivy.org
+Kivy    2.0.0   www.kivy.org
 
 This device is intended only for personal/domestic use
 under creative commons license: CC BY-NC-SA 3.0 IT
