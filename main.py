@@ -44,7 +44,7 @@ from sys import platform
 # following lines before kivy imports
 # due to problems with multiprocessing in Windows
 if __name__ == '__main__':
-    multiprocessing.freeze_support()    
+    multiprocessing.freeze_support()
 #--------------------------------------------------------
 from kivy.app import App
 from kivy.lang import Builder

@@ -26,6 +26,7 @@ class PlaySound:
             if sb0.returncode == 0: logger.info(f"{sb0.stdout}")
         except subprocess.CalledProcessError as err:
             logger.error(err)
+            raise(err)
         finally:
             return
 

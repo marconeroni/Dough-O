@@ -1,0 +1,1 @@
+[INFO   ] Logger: Record log in c:\Users\marco\Desktop\Dough-o\Logs\kivy_20-12-15_1.txt
