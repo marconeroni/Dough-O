@@ -120,7 +120,7 @@ class NotifyHelper(EventDispatcher):
 #------------------------------------------------------------
 
 
-    def build_mail(self, io_status_code=0, prgm_status_code = 150, power_status_code=0, temp_meas=0, 
+    def build_mail(self, io_status_code=0, prgm_status_code = 150, power_status_code=0, temp_meas=0,
                     temp_target=0, program='', program_details = '', mail_subject='', mail_heading='', attachment = '', timeout = 5, send = False):
 
         if send == False: return

@@ -77,7 +77,7 @@ class ConfigModule(object):
     log = False
     buzzer = False
     io_interface = True
-    temp_increment = 0.1
+    temp_increment = 0.5
     time_increment = 0.5
     dp_separator = '.'
     cloud = False
@@ -85,9 +85,13 @@ class ConfigModule(object):
     mockup = False
     auto_reboot = True
     ups_shutdown = 60
+    # Other config values
+    show_cursor = 1
+    _devices = '/sys/bus/w1/devices/'
+    _log = '/home/pi/Dough-O/Logs/'
 
 
-    T_min_C = -18
+    T_min_C = -15
     T_max_C = 50
     id_sens_int = ''
     id_sens_ext = ''
@@ -99,6 +103,7 @@ class ConfigModule(object):
     ubidots_ip = ''
     ubidots_api = ''
     ubidots_device_label = ''
+    ubidots_request_interval = 300
     ub_var_temp_int = ''
     ub_var_temp_ext = ''
     ub_var_temp_target = ''
@@ -141,6 +146,8 @@ class ConfigModule(object):
     numid ='6'
     card_num = '1'
 
+    # read file config on start
+    config.read(f"{config_file_path}", encoding ='utf-8')
 
     @classmethod
     def getLogger(cls):
@@ -154,7 +161,7 @@ class ConfigModule(object):
     def getNETLogger(cls):
         return cls.net_logger
 
-    
+
 
     @classmethod
     def init_logger(cls):
@@ -166,9 +173,9 @@ class ConfigModule(object):
         cls.logger.addHandler(log_stream)
         #cls.cur_dir= Path(__file__)             # current dir of config module
         #cls.app_dir = cls.cur_dir.parents[1]
-        cls.config_file_path = cls.app_dir / 'config.ini'
-        cls.config_recovery_path = cls.cur_dir.joinpath('recovery.ini')
-        cls.config.read(f"{cls.config_file_path}", encoding ='utf-8')
+        #cls.config_file_path = cls.app_dir / 'config.ini'
+        #cls.config_recovery_path = cls.cur_dir.joinpath('recovery.ini')
+        #cls.config.read(f"{cls.config_file_path}", encoding ='utf-8')
 
 
 
@@ -338,7 +345,7 @@ class ConfigModule(object):
             cls.COMP = float(cls.config['CONTROLLER']['comp'])
             cls.ON_PWM = float(cls.config['CONTROLLER']['on_pwm'])
             cls.OFF_PWM = float(cls.config['CONTROLLER']['off_pwm'])
-            cls.COMP_PROT = 60*(float(cls.config['CONTROLLER']['comp_prot']))
+            cls.COMP_PROT = float(cls.config['CONTROLLER']['comp_prot'])
             if cls.COMP_PROT < 60:
                 cls.COMP_PROT = 60
         except Exception as err:
@@ -349,7 +356,9 @@ class ConfigModule(object):
     def read_config(cls, file_path = config_file_path):
         try:
 
-            cls.config.read(f"{file_path}", encoding ='utf-8')
+            data = cls.config.read(f"{file_path}", encoding ='utf-8')
+            if len(data)== 0:
+                raise Exception('ERROR! MISSING OR CORRUPTED CONFIG FILE!')
             #set mouse cursor
             show_cursor = cls.config['APP']['show_cursor']
             Config.set('graphics','show_cursor', show_cursor)
@@ -367,7 +376,7 @@ class ConfigModule(object):
             cls.cloud = cls.to_bool(cls.config['APP']['cloud'])
             cls.auto_reboot = cls.to_bool(cls.config['APP']['auto_reboot'])
             cls.mail_notify = cls.to_bool(cls.config['APP']['mail_notify'])
-            cls.ups_shutdown = 60* int(cls.config['APP']['ups_shutdown'])
+            cls.ups_shutdown =  float(cls.config['APP']['ups_shutdown'])
             if cls.ups_shutdown < 60 and cls.ups_shutdown != 0:
                 cls.ups_shutdown = 60
             cls.id_sens_int = cls.config['SENSORS']['id_sens_int']
@@ -375,6 +384,9 @@ class ConfigModule(object):
             #cls.dp_separator = locale.localeconv().get('decimal_point')
             cls.T_min_C = float(cls.config['BOUNDS']['T_min_C'])
             cls.T_max_C = float(cls.config['BOUNDS']['T_max_C'])
+            if cls.T_min_C == cls.T_max_C:
+                cls.T_min_C = -15
+                cls.T_max_C = 50
             cls.sound_volume = float(cls.config['AUDIO']['sound_volume'])
             cls.ubidots_key = cls.config['UBIDOTS']['key']
             cls.ubidots_token = cls.config['UBIDOTS']['token']
@@ -382,6 +394,7 @@ class ConfigModule(object):
             cls.ubidots_ip = cls.config['UBIDOTS']['ip']
             cls.ubidots_api = cls.config['UBIDOTS']['api']
             cls.ubidots_device_label = cls.config['UBIDOTS']['device_label']
+            cls.ubidots_request_interval = cls.config['UBIDOTS']['request_interval']
             cls.ub_var_temp_int = cls.config['UBIDOTS']['var_temp_int']
             cls.ub_var_temp_ext = cls.config['UBIDOTS']['var_temp_ext']
             cls.ub_var_temp_target = cls.config['UBIDOTS']['var_temp_target']
@@ -410,11 +423,15 @@ class ConfigModule(object):
             cls.warning_audio = cls.config['AUDIO']['warning']
             cls.alert_audio = cls.config['AUDIO']['alert']
             cls.io_interface = cls.to_bool(cls.config['APP']['io_interface'])
+            # store path values independent from platform
+            cls.config['PATHS']['devices'] = ConfigModule._devices
+            cls.config['PATHS']['log'] = ConfigModule._log
 
         except Exception as ex:
             error = f"Error reading config.ini file: {ex}"
             cls.exception_string = f"ERROR READING CONFIG FILE!\n{ex}"
             cls.logger.error(error)
+            raise
             #cls.logger.info(error)
 
         cls.read_controller_par()
@@ -613,6 +630,59 @@ class ConfigModule(object):
             cls.config['SENSORS']['id_sens_int'] = kwargs['id_sens_int']
             cls.config['SENSORS']['id_sens_ext'] = kwargs['id_sens_ext']
             cls.config['AUDIO']['sound_volume'] = kwargs['sound_volume']
+
+            cls.config['APP']['mockup'] = str(cls.mockup)
+            cls.config['APP']['io_interface'] = str(cls.io_interface)
+            cls.config['APP']['show_cursor'] = str(cls.show_cursor)
+            cls.config['APP']['auto_reboot'] = str(cls.auto_reboot)
+            cls.config['APP']['ups_shutdown'] = str(int(cls.ups_shutdown/60))
+            cls.config['SMTP']['mail_sender'] = cls.mail_sender
+            cls.config['SMTP']['mail_receiver'] = cls.mail_receiver
+            cls.config['SMTP']['host'] = cls.host
+            cls.config['SMTP']['port'] = str(int(cls.port))
+            cls.config['SMTP']['username'] = cls.username
+            cls.config['SMTP']['password'] = cls.password
+            cls.config['PATHS']['devices'] = cls._devices
+            cls.config['PATHS']['log'] = cls._log
+            cls.config['BOUNDS']['t_min_c'] = str(cls.T_min_C)
+            cls.config['BOUNDS']['t_max_c'] = str(cls.T_max_C)
+            cls.config['UBIDOTS']['key'] = cls.ubidots_key
+            cls.config['UBIDOTS']['token'] = cls.ubidots_token
+            cls.config['UBIDOTS']['url'] = cls.ubidots_url
+            cls.config['UBIDOTS']['ip'] = cls.ubidots_ip
+            cls.config['UBIDOTS']['api'] = cls.ubidots_api
+            cls.config['UBIDOTS']['device_label'] = cls.ubidots_device_label
+            cls.config['UBIDOTS']['var_temp_int'] = cls.ub_var_temp_int
+            cls.config['UBIDOTS']['var_temp_ext'] = cls.ub_var_temp_ext
+            cls.config['UBIDOTS']['var_temp_target'] = cls.ub_var_temp_target
+            cls.config['UBIDOTS']['var_duration'] = cls.ub_var_duration
+            cls.config['UBIDOTS']['var_remaining_time'] = cls.ub_var_remaining_time
+            cls.config['UBIDOTS']['var_out_state'] = cls.ub_var_out_state
+            cls.config['UBIDOTS']['var_t_unit_scale'] = cls.ub_var_t_unit_scale
+            cls.config['UBIDOTS']['var_prgm_details'] = cls.ub_var_prgm_details
+            cls.config['UBIDOTS']['var_power_status'] = cls.ub_var_power_status
+            cls.config['UBIDOTS']['request_interval'] = cls.ubidots_request_interval
+            cls.config['CONTROLLER']['hh_hl'] = f"{cls.HH_HL:.1f}"
+            cls.config['CONTROLLER']['hh'] = f"{cls.HH:.1f}"
+            cls.config['CONTROLLER']['hl'] = f"{cls.HL:.1f}"
+            cls.config['CONTROLLER']['hl_pwm'] = f"{cls.HL_PWM:.1f}"
+            cls.config['CONTROLLER']['neg_off'] = f"{cls.NEG_OFF:.1f}"
+            cls.config['CONTROLLER']['pos_off'] = f"{cls.POS_OFF:.1f}"
+            cls.config['CONTROLLER']['comp'] = f"{cls.COMP:.1f}"
+            cls.config['CONTROLLER']['on_pwm'] = f"{cls.ON_PWM:.1f}"
+            cls.config['CONTROLLER']['off_pwm'] = f"{cls.OFF_PWM:.1f}"
+            cls.config['CONTROLLER']['comp_prot'] = f"{cls.COMP_PROT:.1f}"
+            cls.config['AUDIO']['card_num'] = cls.card_num
+            cls.config['AUDIO']['num_id'] = cls.numid
+            cls.config['AUDIO']['sound_volume'] = str(cls.sound_volume)
+            cls.config['AUDIO']['button'] = cls.button_audio
+            cls.config['AUDIO']['button_ok'] = cls.button_ok_audio
+            cls.config['AUDIO']['button_cancel'] = cls.button_cancel_audio
+            cls.config['AUDIO']['start_program'] = cls.start_program_audio
+            cls.config['AUDIO']['end_program'] = cls.end_program_audio
+            cls.config['AUDIO']['cross_phase'] = cls.cross_phase_audio
+            cls.config['AUDIO']['warning'] = cls.warning_audio
+            cls.config['AUDIO']['alert'] = cls.alert_audio
 
             if backup == False:
                 conf_path = cls.config_file_path

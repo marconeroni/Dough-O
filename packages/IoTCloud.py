@@ -53,14 +53,14 @@ class UbidotsConnect:
                 prgm_details = str(program_details.value.decode())
                 rem_time = str(remaining_time.value.decode())
                 out_state = self.map_out(lo_heater.value, hi_heater.value, compressor.value)
-
+                power_status_map = {300:0 , 350:0, 0:1}
                 payload = {
                             ConfigModule.ub_var_temp_int: temp_meas.value,
                             ConfigModule.ub_var_temp_ext: temp_ext.value,
                             ConfigModule.ub_var_temp_target: temp_target.value,
                             ConfigModule.ub_var_duration: duration.value,
                             ConfigModule.ub_var_out_state: out_state,
-                            ConfigModule.ub_var_power_status: power_status.value,
+                            ConfigModule.ub_var_power_status: power_status_map.get(power_status.value),
                             ConfigModule.ub_var_prgm_details: {"value": 1, "context": {"prgm_details": prgm_details}},
                             ConfigModule.ub_var_remaining_time: {"value": 1, "context": {"time_fmt": rem_time}}
                         }
@@ -90,16 +90,16 @@ class UbidotsConnect:
                     logger.info("[INFO] UBIDOTS: request made properly!")
                     self.net_logger_flag = True
 
-                
+
 
             except Exception as ex:
                 logger.error(f"[ERR] UBIDOTS SERVER STATUS: {server_status.value}")
                 net_logger.error(f"ERROR: {ex} WHILE CONNECTING TO UBIDOTS")
                 logger.error(f"Exception in IoTCloud package: {ex}")
                 raise
-            
+
             finally:
-                time.sleep(300)     
+                time.sleep(ConfigModule.ubidots_request_interval)
 
     # not used
     def get_var(self,device, variable):

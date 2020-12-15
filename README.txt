@@ -26,8 +26,8 @@ Other free sounds from soundbible.com in accordance with terms of use:
 Free icons from flaticon.com in accordance with terms of use:
 
 # prosymbols
-# freepik 
-# photo3idea_studio 
+# freepik
+# photo3idea_studio
 # those_icons
 # eucalyp
 # smashicons

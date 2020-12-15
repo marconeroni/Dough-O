@@ -70,17 +70,17 @@ class Settings_Screen(Screen):
 
     def load_backup_config(self):
         try:
+            print(ConfigModule.config_backup_path)
             app = App.get_running_app()
             ConfigModule.read_config(ConfigModule.config_backup_path)
             self.ParseConfig()
             self.lbl_set_notify.text = \
             '[font=Aldrich][b][color=#ff0339][size=20]'+escape_markup('{}'.format(app.settings_notify_backup_load))+'[/font][/size][/color][/b]'
-        except Exception as ex:
-            err = 'ERROR LOADING BACKUP FILE!'
-            logger.error(f"{err}\n{ex}")
+        except Exception as err:
+            err = 'MISSING OR CORRUPTED BACKUP FILE!'
+            logger.error(f"{err}\n{err}")
             self.lbl_set_notify.text = \
                 '[font=Aldrich][b][color=#ff0339][size=15]'+escape_markup('{}'.format(err))+'[/font][/size][/color][/b]'
-
 
     def on_pre_enter(self):
         self.lbl_set_notify.text = ''
@@ -139,7 +139,7 @@ class Settings_Screen(Screen):
         self.id_sens_int = ConfigModule.sens_ids[0] if ConfigModule.id_sens_int == '' else ConfigModule.id_sens_int
         self.id_sens_ext = ConfigModule.sens_ids[1] if ConfigModule.id_sens_ext == '' else ConfigModule.id_sens_ext
         self.__filecounter = self.__files.index(self.language+'.py') #indexing counter to avoid redondant click on language button selection
-        
+
 
     def check_audio_out(self):
         if self.sound_slider.value > 0:
@@ -171,7 +171,7 @@ class Settings_Screen(Screen):
         self.clear_notify()
         limit = len(self.__files)
         self.__filecounter+= direction
-        
+
         if self.__filecounter >= limit or self.__filecounter <= -limit:
             self.__filecounter = 0
 
@@ -250,7 +250,7 @@ class Settings_Screen(Screen):
         self.temp_scale = self.__temp_scale['C']
         self.int_sens_offset  = 0.0
         self.ext_sens_offset  = 0.0
-        self.temp_increment = 0.1
+        self.temp_increment = 0.5
         self.time_increment = 0.5
         self.buzzer_switch.active = False
         self.log_switch.active = False
@@ -296,7 +296,7 @@ class Settings_Screen(Screen):
             self.lbl_set_notify.text = \
             '[font=Aldrich][b][color=#ff0339][size=20]'+escape_markup('{}'.format(app.settings_notify_backup))+'[/font][/size][/color][/b]'
             return
-        
+
         logger.info(f"CONFIG FILE SUCCESSFULLY UPDATED!")
         self.reboot_counter = 0
         if self.reboot_clock is None:
