@@ -155,12 +155,15 @@
 
 
 
-                        Image:
+                        IconButton:
                             allow_stretch: False
                             keep_ratio: True
-                            source: './Icons/heat_room_128.png' #freepik
+                            source: './Icons/heat_room_cam_128.png' #freepik
                             size_hint: 0.2,0.2
                             pos_hint: {'x': -0.03,'y': 0.39}
+                            on_release: self.source = './Icons/heat_room_cam_128.png'; app.root.current = 'camera_screen'
+                            on_press: app.btn_sound(); self.source = './Icons/heat_room_cam_128_pressed.png'
+
 
                         MP_DB_ValueLabel:
                             id: MP_lbl_temp_target

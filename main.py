@@ -29,6 +29,7 @@ from packages.LoadFromMemoryScreen import LoadFromMemory_Screen
 from packages.SettingsScreen import Settings_Screen
 from packages.InfoScreen import Info_Screen
 from packages.LogScreen import Log_Screen
+from packages.CameraScreen import Camera_Screen
 from packages.LongPressButton import LongPressButton
 from packages.Audio import PlaySound
 from packages import Shared
@@ -65,6 +66,7 @@ Builder.load_file("./kv/settings_screen.kv")
 Builder.load_file("./kv/savemenu_screen.kv")
 Builder.load_file("./kv/info_screen.kv")
 Builder.load_file("./kv/log_screen.kv")
+Builder.load_file("./kv/camera_screen.kv")
 Builder.load_file("./kv/home_screen.kv")
 
 

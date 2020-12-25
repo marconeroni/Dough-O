@@ -455,8 +455,7 @@ class ConfigModule(object):
                 os.execv(sys.executable, ['python'] + sys.argv) #is necessary to restart python application after copy
             except Exception as ex:
                 print("error in check_config:", ex)
-        
-        
+
         cls.prog_path.mkdir(mode=0o777, parents=False, exist_ok=True)
 
     @classmethod # is mandatory to check strength signal after enable

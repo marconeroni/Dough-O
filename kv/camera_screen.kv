@@ -1,0 +1,30 @@
+#:kivy 1.11.0
+#:import utils kivy.utils
+#:import hex kivy.utils.get_color_from_hex
+#:import escape_markup kivy.utils.escape_markup
+
+
+<Camera_Screen>:
+    id: camera
+    name: 'camera_screen'
+    chamber_shot: chamber_shot
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        Image:
+            id: chamber_shot
+            allow_stretch: False
+            keep_ratio: True
+            source: './Icons/no_camera.jpg' #freepik
+            #size_hint: 0.1,0.1
+            #pos_hint: {'x': 0.4,'y': 0.05}
+
+        Button:
+            size_hint: 0.2, 0.1
+            pos_hint:{'center_x':0.5, 'y':1}
+            markup: True
+            text: '[font=Aldrich][b][color=#FFFFFF][size=15]'+ escape_markup(app.sm_notification_btn_cancel)+'[/font][/size][/color][/b]'
+            on_press: app.btn_cancel_sound()
+            on_release:  root.return_to_previous_screen()
