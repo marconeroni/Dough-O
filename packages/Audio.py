@@ -75,7 +75,7 @@ class PlaySound:
                     sound.stop()
             elif platform == 'linux' or platform == 'linux2' and self.busy==False:
                 self.busy = True
-                default_card= f"default:CARD={card}"
+                default_card= f"hw:CARD={card}"
                 sb2 = subprocess.Popen(["sudo", "aplay","-D", default_card, str(self.source)],stdout=subprocess.PIPE) #"-N" non-blocking
                 stdout_value, stdout_err = sb2.communicate()
                 logger.info(f"STDOUT_VALUE: {repr(stdout_value)}")
