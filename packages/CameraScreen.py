@@ -18,6 +18,8 @@ class Camera_Screen(Screen):
     photo_loader = None
     info_text = StringProperty('')
     chamber_shot = ObjectProperty(None)
+    photo_counter = 0
+    photo_name = "chamber_shot"
 
 
     def on_enter(self):
@@ -25,10 +27,10 @@ class Camera_Screen(Screen):
             self.standby_timer = Clock.create_trigger(self.timer, 120)
             self.standby_timer()
         if self.photo_taker is None:
-            self.photo_taker = Clock.create_trigger(self.take_photo, 1,True)
+            self.photo_taker = Clock.create_trigger(self.take_photo, 2,True)
             self.photo_taker()
         if self.photo_loader is None:
-            self.photo_loader = Clock.create_trigger(self.load_photo, 1.5,True)
+            self.photo_loader = Clock.create_trigger(self.load_photo, 2.5,True)
             self.photo_loader()
 
 
@@ -48,14 +50,20 @@ class Camera_Screen(Screen):
 
     def take_photo(self,dt):
             try:
-                subprocess.run(["sudo", "fswebcam ", "-r", "1280x720", "chamber_shot.jpg"]) #"-N" non-blocking
+                if self.photo_counter < 1:
+                    self.photo_counter+=1
+                else:
+                    self.photo_counter = 0
+                self.photo_name = f"chamber_shot_{self.photo_counter}"
+                subprocess.run(["fswebcam", "-r", "1280x720", self.photo_name])
             except Exception as ex:
                 logger.error(ex)
 
 
     def load_photo(self,dt):
         try:
-            self.chamber_shot.source = '/home/pi/chamber_shot.jpg'
+            photo_source = f"/home/pi/{self.photo_name}"
+            self.chamber_shot.source = photo_source
         except Exception as ex:
             logger.error(ex)
 

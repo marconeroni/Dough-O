@@ -146,7 +146,7 @@ class ConfigModule(object):
     warning_audio = ''
     alert_audio = ''
     numid ='1' # external is usually 6
-    card_num = '0' # external is usually 1
+    card_num = 'Device' # external is usually 1
 
     # read file config on start
     config.read(f"{config_file_path}", encoding ='utf-8')
