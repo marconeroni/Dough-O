@@ -28,7 +28,7 @@ class Camera_Screen(Screen):
             self.standby_timer = Clock.create_trigger(self.timer, 60)
             self.standby_timer()
         if self.photo_taker is None:
-            self.photo_taker = Clock.create_trigger(self.take_photo, 2,True)
+            self.photo_taker = Clock.create_trigger(self.take_photo, 0.5,True)
             self.photo_taker()
 
 

@@ -258,12 +258,14 @@
                             self.height-root.my_canvas_border*2
 
                 RelativeLayout:
-                    Image:
+                    IconButton:
                         allow_stretch: False
                         keep_ratio: True
-                        source: './Icons/heat_room_128.png'
+                        source: './Icons/heat_room_cam_128.png' #freepik
                         size_hint: 0.4,0.4
                         pos_hint: {'x':-0.02,'y': 0.28}
+                        on_release: self.source = './Icons/heat_room_cam_128.png'; app.root.current = 'camera_screen'
+                        on_press: app.btn_sound(); self.source = './Icons/heat_room_cam_128_pressed.png'
 
                     Label:
                         id: lbl_cell_temp

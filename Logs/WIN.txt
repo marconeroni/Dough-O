@@ -1,3 +1,0 @@
-2020-12-26 11:08:51,752 - app logger - CRITICAL - ConfigModule.py - init_logger : 236 - [ GENERAL LOGGER READY ]
-2020-12-26 11:09:02,523 - app logger - ERROR - CameraScreen.py - take_photo : 50 - [WinError 2] Impossibile trovare il file specificato
-2020-12-26 11:09:04,525 - app logger - ERROR - CameraScreen.py - take_photo : 50 - [WinError 2] Impossibile trovare il file specificato
