@@ -424,7 +424,6 @@ class ConfigModule(object):
             #cls.alert_audio = cls.config['AUDIO']['alert']
             cls.io_interface = cls.to_bool(cls.config['APP']['io_interface'])
             # store path values independent from platform
-
             #cls.config['PATHS']['devices'] = ConfigModule._devices
             #cls.config['PATHS']['log'] = ConfigModule._log
             cls._devices=cls.config['PATHS']['devices']
