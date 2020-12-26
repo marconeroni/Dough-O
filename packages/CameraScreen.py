@@ -31,7 +31,7 @@ class Camera_Screen(Screen):
             self.photo_taker()
         if self.photo_loader is None:
             self.photo_loader = Clock.create_trigger(self.load_photo, 2.5,True)
-            self.photo_loader()
+            #self.photo_loader()
 
 
     def on_leave(self):
@@ -55,7 +55,9 @@ class Camera_Screen(Screen):
                 else:
                     self.photo_counter = 0
                 self.photo_name = f"chamber_shot_{self.photo_counter}"
-                subprocess.run(["fswebcam", "-r", "1280x720", self.photo_name])
+                subprocess.Popen(["fswebcam", "-r", "1280x720", self.photo_name], stdout=subprocess.PIPE)
+                photo_source = f"/home/pi/{self.photo_name}"
+                self.chamber_shot.source = photo_source
             except Exception as ex:
                 logger.error(ex)
 
