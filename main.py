@@ -83,7 +83,11 @@ class MainApp(App):
         lm = None
         btn_ok = PlaySound()
         btn_ok.source = ConfigModule.sounds_dir / ConfigModule.button_ok_audio
-        btn_ok.set_volume(ConfigModule.sound_volume, not ConfigModule.buzzer, control = ConfigModule.numid, card = ConfigModule.card_num) # with this line, we set volume app at startup!!!!
+        try:
+            btn_ok.set_volume(ConfigModule.sound_volume, not ConfigModule.buzzer, control = ConfigModule.numid, card = ConfigModule.card_num) # with this line, we set volume app at startup!!!!
+        except Exception as ex:
+            print('check audio config!')
+            pass
         btn_cancel = PlaySound()
         btn_cancel.source =ConfigModule.sounds_dir / ConfigModule.button_cancel_audio
         btn = PlaySound()
