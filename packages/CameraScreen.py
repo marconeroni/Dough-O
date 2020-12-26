@@ -5,7 +5,7 @@ from packages.ConfigModule import ConfigModule
 from packages import Shared
 from threading import Thread
 import subprocess
-import time
+import os
 from kivy.clock import Clock
 
 
@@ -15,23 +15,21 @@ logger = ConfigModule.getLogger()
 class Camera_Screen(Screen):
     standby_timer = None
     photo_taker = None
-    photo_loader = None
     info_text = StringProperty('')
     chamber_shot = ObjectProperty(None)
     photo_counter = 0
-    photo_name = "chamber_shot"
+    photo_source = '/home/pi/chamber_shot'
+    logger_err_flag = True
 
 
     def on_enter(self):
+        self.logger_err_flag = True
         if self.standby_timer is None:
-            self.standby_timer = Clock.create_trigger(self.timer, 120)
+            self.standby_timer = Clock.create_trigger(self.timer, 60)
             self.standby_timer()
         if self.photo_taker is None:
             self.photo_taker = Clock.create_trigger(self.take_photo, 2,True)
             self.photo_taker()
-        if self.photo_loader is None:
-            self.photo_loader = Clock.create_trigger(self.load_photo, 2.5,True)
-            #self.photo_loader()
 
 
     def on_leave(self):
@@ -41,33 +39,20 @@ class Camera_Screen(Screen):
         if self.photo_taker is not None:
             self.photo_taker.cancel()
             self.photo_taker = None
-        if self.photo_loader is not None:
-            self.photo_loader.cancel()
-            self.photo_loader = None
 
     def timer(self, dt):
         self.parent.current = 'home_screen'
 
     def take_photo(self,dt):
             try:
-                if self.photo_counter < 1:
-                    self.photo_counter+=1
-                else:
-                    self.photo_counter = 0
-                self.photo_name = f"chamber_shot_{self.photo_counter}"
-                subprocess.Popen(["fswebcam", "-r", "1280x720", self.photo_name], stdout=subprocess.PIPE)
-                photo_source = f"/home/pi/{self.photo_name}"
-                self.chamber_shot.source = photo_source
+                self.chamber_shot.reload() # refresh widget cache
+                subprocess.Popen(["fswebcam", "-r", ConfigModule.camera_resolution, self.photo_source], stdout=subprocess.PIPE)
+                self.chamber_shot.source = self.photo_source
             except Exception as ex:
-                logger.error(ex)
+                if self.logger_err_flag == True:
+                    logger.error(ex)
+                    self.logger_err_flag = False
 
-
-    def load_photo(self,dt):
-        try:
-            photo_source = f"/home/pi/{self.photo_name}"
-            self.chamber_shot.source = photo_source
-        except Exception as ex:
-            logger.error(ex)
 
 
     def return_to_previous_screen(self, dt=0):

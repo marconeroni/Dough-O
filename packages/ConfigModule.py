@@ -147,6 +147,7 @@ class ConfigModule(object):
     alert_audio = ''
     numid ='1' # external is usually 6
     card_num = 'Device' # external is usually 1
+    camera_resolution = '1280x720'
 
     # read file config on start
     config.read(f"{config_file_path}", encoding ='utf-8')
@@ -423,8 +424,13 @@ class ConfigModule(object):
             #cls.alert_audio = cls.config['AUDIO']['alert']
             cls.io_interface = cls.to_bool(cls.config['APP']['io_interface'])
             # store path values independent from platform
-            cls.config['PATHS']['devices'] = ConfigModule._devices
-            cls.config['PATHS']['log'] = ConfigModule._log
+
+            #cls.config['PATHS']['devices'] = ConfigModule._devices
+            #cls.config['PATHS']['log'] = ConfigModule._log
+            cls._devices=cls.config['PATHS']['devices']
+            cls._log= cls.config['PATHS']['log']
+
+            cls.camera_resolution = cls.config['CAMERA']['resolution']
 
         except Exception as ex:
             error = f"Error reading config.ini file: {ex}"
@@ -698,6 +704,7 @@ class ConfigModule(object):
             cls.config['AUDIO']['end_program'] = cls.end_program_audio
             cls.config['AUDIO']['cross_phase'] = cls.cross_phase_audio
             cls.config['AUDIO']['warning'] = cls.warning_audio
+            cls.config['CAMERA']['resolution'] = cls.camera_resolution
             #cls.config['AUDIO']['alert'] = cls.alert_audio
 
             if backup == False:
