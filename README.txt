@@ -1,9 +1,10 @@
 ################### Dough-O! by Marco Neroni 2020 ###################
 ######################### www.dougho.com ###########################
-######################### release 1.0.0 #########################
+######################### release 1.1.0 #########################
 
 Python  3.7.6   www.python.org
 Kivy    2.0.0   www.kivy.org
+
 
 The first do-it-yourself retarder proving
 with programmable cycles
@@ -43,3 +44,10 @@ Free icons from flaticon.com in accordance with terms of use:
 # mavadee
 # icongeek26
 # Kiranshastry
+
+
+------ release 1.1 ------
+added camera menu
+
+------ release 1.0 ------
+first release
