@@ -2,7 +2,7 @@
 ######################### www.dougho.com ###########################
 ######################### release 1.1.0 #########################
 
-Python  3.7.6   www.python.org
+Python  3.7.3   www.python.org
 Kivy    2.0.0   www.kivy.org
 
 
@@ -46,8 +46,8 @@ Free icons from flaticon.com in accordance with terms of use:
 # Kiranshastry
 
 
------- release 1.1 ------
+------ release 1.1.0 ------
 added camera menu
 
------- release 1.0 ------
+------ release 1.0.0 ------
 first release
