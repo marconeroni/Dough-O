@@ -48,6 +48,7 @@ Free icons from flaticon.com in accordance with terms of use:
 
 ------ release 1.1.0 ------
 added camera menu
+added chamber light
 
 ------ release 1.0.0 ------
 first release

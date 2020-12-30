@@ -24,6 +24,7 @@ class Camera_Screen(Screen):
 
     def on_enter(self):
         self.logger_err_flag = True
+        Shared.CHAMBER_LIGHT.value = 1
         if self.standby_timer is None:
             self.standby_timer = Clock.create_trigger(self.timer, 60)
             self.standby_timer()
@@ -33,12 +34,14 @@ class Camera_Screen(Screen):
 
 
     def on_leave(self):
+        Shared.CHAMBER_LIGHT.value = 0
         if self.standby_timer is not None:
             self.standby_timer.cancel()
             self.standby_timer = None
         if self.photo_taker is not None:
             self.photo_taker.cancel()
             self.photo_taker = None
+        
 
     def timer(self, dt):
         self.parent.current = 'home_screen'

@@ -11,6 +11,7 @@ ENABLE_OUTPUT = Value('i',  0)
 ACTUAL_TEMP_TARGET= Value('d', 0.0)
 BUZZER = Value('i',  0)
 BUZZ_ENABLE = Value(c_bool, False)
+CHAMBER_LIGHT= Value('i',  0)
 SERVER_STATUS = Value('i',  400)
 IO_STATUS_CODE = Value('i', 0)
 PRGM_STATUS_CODE = Value('i', 0)
@@ -79,6 +80,7 @@ def reset_all(self):
     self.HOME = True
     self.LOAD_FROM_MEM = False
     self.PROGRAM = ''
+    self.CHAMBER_LIGHT.value = 0
     self.LO_HEATER_STATE.value = 0
     self.HI_HEATER_STATE.value= 0
     self.COMPRESSOR_STATE.value = 0
@@ -86,7 +88,7 @@ def reset_all(self):
     #self.IO_STATUS_CODE.value = 0
     self.PRGM_STATUS_CODE.value = 0
     self.PRESTART_START_DATE= datetime.now()
-
+    
 
     self.MP_ELAPSED_TIME = 0.0
     self.MP_TIME_END = datetime.now()

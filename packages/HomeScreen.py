@@ -91,7 +91,7 @@ class Home_Screen(Screen):
     def set_menu_icon(self,dt):
         self.hs_internet_icon.set_input_state(self.ping.return_value)
         self.hs_power_icon.set_input_state(Shared.POWER_STATUS_CODE.value)
-
+        
         if ConfigModule.wi_fi == True:
             self.wifi_icon.source= './Icons/wifi2_64.png'
         else:

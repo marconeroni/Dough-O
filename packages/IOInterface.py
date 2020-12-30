@@ -66,6 +66,7 @@ class IOInterface(object):
     HI_heater = DigitalOutputDevice(19)
     Compressor = DigitalOutputDevice(26)
     Fan = DigitalOutputDevice(6)
+    Chamber_Light = LED(12)
     Red_LED = LED(16)       #RED
     Green_LED = LED(20)     #GREEN
     Blue_LED = LED(21)      #BLUE
@@ -153,7 +154,6 @@ class IOInterface(object):
         cls.LO_heater.off()
         cls.HI_heater.off()
         cls.Compressor.off()
-
         logger.info('OUTPUT DEVICES OFF!!!')
 
     @classmethod
@@ -165,7 +165,8 @@ class IOInterface(object):
 
 
     @classmethod
-    def IO_loop(cls,T_meas, T_ext, T_targ, lo_heater, hi_heater, compressor, enable, cpu_temp, status_code, power_status, compressor_protection_code):
+    def IO_loop(cls,T_meas, T_ext, T_targ, lo_heater, hi_heater, compressor, enable,
+                 cpu_temp, status_code, power_status, compressor_protection_code, chamber_light):
 
         while(True):
             if ConfigModule.mockup == True:
@@ -307,6 +308,13 @@ class IOInterface(object):
                 else:
                     cls.Power_LED.blink(0.5,0.5)
 
+                
+                if chamber_light.value == 0:
+                    cls.Chamber_Light.off()
+                else:
+                    cls.Chamber_Light.on()
+
+
         #------------ CODE EXECUTION WHEN ENABLED ----------------------------------------------------
 
                 if enable.value == 1:
@@ -447,7 +455,8 @@ class IOInterface(object):
                                     Shared.CPU_TEMP,
                                     Shared.IO_STATUS_CODE,
                                     Shared.POWER_STATUS_CODE,
-                                    Shared.COMPRESSOR_PROTECTION_CODE
+                                    Shared.COMPRESSOR_PROTECTION_CODE,
+                                    Shared.CHAMBER_LIGHT
                                     )
                             )
         IO_process.start()
