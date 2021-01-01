@@ -26,7 +26,7 @@ class Camera_Screen(Screen):
         self.logger_err_flag = True
         Shared.CHAMBER_LIGHT.value = 1
         if self.standby_timer is None:
-            self.standby_timer = Clock.create_trigger(self.timer, 60)
+            self.standby_timer = Clock.create_trigger(self.return_to_previous_screen, 120)
             self.standby_timer()
         if self.photo_taker is None:
             self.photo_taker = Clock.create_trigger(self.take_photo, 1,True)
@@ -41,15 +41,13 @@ class Camera_Screen(Screen):
         if self.photo_taker is not None:
             self.photo_taker.cancel()
             self.photo_taker = None
-        
 
-    def timer(self, dt):
-        self.parent.current = 'home_screen'
+
 
     def take_photo(self,dt):
             try:
                 self.chamber_shot.reload() # refresh widget cache
-                subprocess.Popen(["fswebcam", "-r", ConfigModule.camera_resolution, "--no-banner", self.photo_source], stdout=subprocess.PIPE)
+                subprocess.Popen(["fswebcam", "-r", ConfigModule.camera_resolution, "--no-banner", "-S", "10", self.photo_source], stdout=subprocess.PIPE)
                 self.chamber_shot.source = self.photo_source
             except Exception as ex:
                 if self.logger_err_flag == True:
