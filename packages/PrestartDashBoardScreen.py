@@ -210,7 +210,7 @@ class PreStart_DashBoard_Screen(Screen):
 
             if self.program_is_running == False:
                 self.start_program_audio.set_volume(ConfigModule.sound_volume, not ConfigModule.buzzer,control = ConfigModule.numid, card = ConfigModule.card_num)
-                self.start_program_audio.play(ConfigModule.sound_volume, not ConfigModule.buzzer, card = ConfigModule.card_num, delay = 0.5)
+                self.start_program_audio.aplay(ConfigModule.sound_volume, not ConfigModule.buzzer, card = ConfigModule.card_num, delay = 0.5)
                 Shared.BUZZER.value = 7 # long beep
                 Shared.PRGM_STATUS_CODE.value = 110
 
