@@ -47,7 +47,7 @@ class Camera_Screen(Screen):
     def take_photo(self,dt):
             try:
                 self.chamber_shot.reload() # refresh widget cache
-                subprocess.Popen(["fswebcam", "-r", ConfigModule.camera_resolution, "--no-banner", "-S", "10", self.photo_source], stdout=subprocess.PIPE)
+                subprocess.Popen(["fswebcam", "-r", ConfigModule.camera_resolution, "--no-banner", "-S", "6", self.photo_source], stdout=subprocess.PIPE)
                 self.chamber_shot.source = self.photo_source
             except Exception as ex:
                 if self.logger_err_flag == True:
