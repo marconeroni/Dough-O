@@ -141,7 +141,7 @@ class MultiPhase_DashBoard_Screen(Screen):
 
 
     def on_pre_enter(self):
-        self.mp_img_out_state,self.mp_img_out_label= self.outimage.set_image(Shared.IO_STATUS_CODE.value, Shared.MP_REMAINING_TIME)
+        self.mp_img_out_state,self.mp_img_out_label= self.outimage.set_image(Shared.IO_STATUS_CODE.value, Shared.MP_REMAINING_TIME.value)
         self.mp_internet_icon.set_input_state(self.ping.return_value, disabled = not not (ConfigModule.wi_fi or ConfigModule.ethernet))
         self.mp_cloud_icon.set_input_state(Shared.SERVER_STATUS.value, disabled = not ConfigModule.cloud)
         self.mp_power_icon.set_input_state(Shared.POWER_STATUS_CODE.value)
@@ -176,7 +176,7 @@ class MultiPhase_DashBoard_Screen(Screen):
         self.P4_duration = Shared.MP_DURATION_DICT.get('4')
         self.P5_duration = Shared.MP_DURATION_DICT.get('5')
 
-        self.time_end = Shared.MP_TIME_END.strftime("%d/%b/%y %H:%M:%S")
+        #self.time_end = Shared.MP_TIME_END.strftime("%d/%b/%y %H:%M:%S")
         self.program_is_running = Shared.MP_PROGRAM_IS_RUNNING = True
         self.lbl_timer.duration = self.actual_phase_duration = Shared.MP_ACTUAL_PHASE_DURATION.value = Shared.MP_DURATION_DICT.get(str(self.lbl_timer.phase))
         Shared.ACTUAL_TEMP_TARGET.value = Shared.MP_TEMP_TARGET_DICT.get(str(self.lbl_timer.phase))
@@ -257,6 +257,10 @@ class MultiPhase_DashBoard_Screen(Screen):
 
     def update(self, dt):   # update running even after program ending, for continuos temperature measurement
         program_details = ''
+        totals_updates = {k:(0 if k<=str(self.lbl_timer.phase) else v) for (k,v) in Shared.MP_DURATION_DICT.items() }
+        total_dur_from_now = sum(totals_updates.values())*3600+self.lbl_timer.remaining_time_in_seconds
+        self.time_end = (datetime.now() + timedelta(seconds=total_dur_from_now)).strftime("%d/%b/%y   %H:%M")
+
         app = App.get_running_app()
         if self.program_is_running == True:
             Shared.ENABLE_OUTPUT.value = 1 if Shared.POWER_STATUS_CODE.value < 350 else 0
@@ -292,7 +296,7 @@ class MultiPhase_DashBoard_Screen(Screen):
             self.stop_all()
             return
 
-        Shared.MP_REMAINING_TIME = self.lbl_timer.remaining_time_in_seconds
+        Shared.MP_REMAINING_TIME.value = self.lbl_timer.remaining_time_in_seconds
         self.actual_phase = Shared.MP_ACTUAL_PHASE.value =  str(self.lbl_timer.phase)
         Shared.REMAINING_TIME_FMT.value= bytes(self.lbl_timer.format_time.encode())
         if(self.lbl_timer.end_phase == True and self.program_is_running == True and Shared.IO_STATUS_CODE.value <= 100):

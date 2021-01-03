@@ -59,7 +59,7 @@ PRESTART_START_DATE= datetime.now()
 
 #-------------------MULTIPHASE VARIABLES--------------------------
 MP_ELAPSED_TIME = 0.0
-MP_REMAINING_TIME = 0.0
+MP_REMAINING_TIME = Value('d', 0.0)
 MP_TIME_END = datetime.now()
 MP_TOTAL_DURATION= 0.5
 MP_ACTUAL_PHASE_DURATION = Value('d', 0.5)

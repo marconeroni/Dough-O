@@ -606,7 +606,7 @@
                     source: './Icons/accept_128.png'
                     size_hint: 0.13,0.13
                     pos_hint: {'x': 0.02,'y': 0.49}
-                    on_release:  root.validate(); app.root.current = 'multiphase_dashboard_screen'; self.source = './Icons/accept_128.png'
+                    on_release:   root.validate(); root.store_duration(); app.root.current = 'multiphase_dashboard_screen'; self.source = './Icons/accept_128.png'
                     on_press: app.btn_ok_sound(); self.source = './Icons/accept_128_pressed.png'
                     #icongeek26
 
