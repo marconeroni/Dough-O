@@ -218,27 +218,15 @@ class MultiPhase_Set_Screen(Screen):
 
         if Shared.MP_PROGRAM_IS_RUNNING == False:
             Shared.MP_TIMER_BEGIN = datetime.now()
-            self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
-        else: # when you decrement phase duration until the timer is reset, is necessary to recalculate totals (only when program is running)
-            if Shared.MP_REMAINING_TIME.value >= self.mem_duration*3600 - self.phase_duration_dict.get(f"{Shared.MP_ACTUAL_PHASE.value}")*3600:
-                temp_dict={k:(float(f"{Shared.MP_REMAINING_TIME.value/3600:.1f}") if int(k)<=int((Shared.MP_ACTUAL_PHASE.value)) else v) for (k,v) in self.phase_duration_dict.items() }
-                self.mp_total_duration = sum(temp_dict.values())
-                self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds)
-                #totals_updates = {k:(0 if int(k)<=int((Shared.MP_ACTUAL_PHASE.value)) else v) for (k,v) in self.phase_duration_dict.items() }
-                #total_duration = sum(totals_updates.values())*3600 + Shared.MP_REMAINING_TIME.value
-                #self.mp_total_duration = f"{total_duration/3600:.2f}"
-                #self.mp_time_end = datetime.now() + timedelta(seconds=total_duration)
-            else:
-                self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds)
 
 
-
-        #self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
+        self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
 
         Shared.MP_TOTAL_DURATION = self.mp_total_duration
         Shared.MP_TIME_END = self.mp_time_end
         Shared.MP_TEMP_TARGET_DICT = self.phase_temp_target_dict
         Shared.MP_DURATION_DICT = self.phase_duration_dict
-
+    
+    # FUNCTION NO LONGER USED!
     def store_duration(self): #call this function when accept button is pressed (before other calls)
         self.mem_duration = self.phase_duration_dict.get(f"{Shared.MP_ACTUAL_PHASE.value}")

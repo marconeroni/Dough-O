@@ -254,13 +254,16 @@ class MultiPhase_DashBoard_Screen(Screen):
         self.ubidotsconnect.stop_iot_communication()
         self.ping.stop()
 
-
-    def update(self, dt):   # update running even after program ending, for continuos temperature measurement
-        program_details = ''
+    # update running even after program ending, for continuos temperature measurement
+    def update(self, dt):   
+        # real time duration - end time calculation. Useful when a phase is interrupted before end 
         totals_updates = {k:(0 if k<=str(self.lbl_timer.phase) else v) for (k,v) in Shared.MP_DURATION_DICT.items() }
         total_dur_from_now = sum(totals_updates.values())*3600+self.lbl_timer.remaining_time_in_seconds
         self.time_end = (datetime.now() + timedelta(seconds=total_dur_from_now)).strftime("%d/%b/%y   %H:%M")
-
+        total_dur = ((datetime.now() + timedelta(seconds=total_dur_from_now)) - Shared.MP_TIMER_BEGIN).seconds/3600
+        self.total_duration = f"{total_dur:.1f}"
+        # ---------------------------------------------
+        program_details = ''
         app = App.get_running_app()
         if self.program_is_running == True:
             Shared.ENABLE_OUTPUT.value = 1 if Shared.POWER_STATUS_CODE.value < 350 else 0
