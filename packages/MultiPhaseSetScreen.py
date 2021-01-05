@@ -47,6 +47,7 @@ class MultiPhase_Set_Screen(Screen):
     P4_duration = NumericProperty(0.0)
     P5_duration = NumericProperty(0.0)
     mp_total_duration = NumericProperty(0.5)
+
     mp_time_end = ObjectProperty(datetime.now()+timedelta(hours=0.5))
 
     mp_btn1 = ObjectProperty(None)
@@ -62,7 +63,7 @@ class MultiPhase_Set_Screen(Screen):
 
     phase_temp_target_dict = {"1":zero, "2":zero, "3":zero, "4":zero, "5":zero}
     phase_duration_dict = {"1":mindur+increment, "2":mindur ,"3":mindur, "4":mindur, "5":mindur}
-
+    prg_duration_dict =  {"1":mindur+increment, "2":mindur ,"3":mindur, "4":mindur, "5":mindur}
 
     def backhome(self):
         self.clear_all()     #clear all state button
@@ -128,13 +129,7 @@ class MultiPhase_Set_Screen(Screen):
 
 
     def decrement_duration(self, _phase):
-        #if the program is running and the remaining time is less than the minimum set, it is no longer possible to reduce the duration
-
-        #if Shared.MP_REMAINING_TIME.value <= self.increment*3600 \
-            #and self.phase_duration_dict.get(f"{_phase}")<= self.mem_duration \
-            #and str(_phase) == Shared.MP_ACTUAL_PHASE.value \
-            #and Shared.MP_PROGRAM_IS_RUNNING==True:
-                #return
+      
         self.phase_duration_dict= {k:(v-self.increment if k==str(_phase) and v > self.mindur+ self.increment else v) for (k,v) in self.phase_duration_dict.items() }
         self.validate()
 
@@ -158,6 +153,7 @@ class MultiPhase_Set_Screen(Screen):
             self.phase_temp_target_dict= {k:(self.zero if k==str(_phase) or _phase ==0 else v) for (k,v) in self.phase_temp_target_dict.items() }
             self.phase_duration_dict = {k:(self.mindur if k==str(_phase) or _phase ==0 else v) for (k,v) in self.phase_duration_dict.items() }
             self.phase_duration_dict = {k:(self.mindur+ self.increment if k=="1" and v <=0 else v) for (k,v) in self.phase_duration_dict.items() } # when cycles end and we want to begin another program
+            self.prg_duration_dict.update(self.phase_duration_dict)
             self.program = Shared.PROGRAM = ''
             self.validate()
 
@@ -210,16 +206,24 @@ class MultiPhase_Set_Screen(Screen):
             self.mp_btn5.disabled = False
             self.mp_btn5.state = 'down'
 
-        self.mp_total_duration = sum(self.phase_duration_dict.values())         #total duration in hours
+        self.prg_duration_dict.update(self.phase_duration_dict)
 
+        if Shared.MP_PROGRAM_IS_RUNNING==True:
+            self.prg_duration_dict = {k:((0) if int(k)<int(Shared.MP_ACTUAL_PHASE.value) else v) for (k,v) in self.prg_duration_dict.items() }
+            #self.prg_duration_dict = {k:((Shared.MP_REMAINING_TIME.value/3600) if k==Shared.MP_ACTUAL_PHASE.value and v==self.mem_duration else v) for (k,v) in self.prg_duration_dict.items() }
+            self.prg_duration_dict = {k:((v-(self.mem_duration-Shared.MP_REMAINING_TIME.value/3600)) if k==Shared.MP_ACTUAL_PHASE.value  else v) for (k,v) in self.prg_duration_dict.items() }
+            #self.prg_duration_dict = {k:(v-(self.mem_duration-Shared.MP_REMAINING_TIME.value/3600) if k==Shared.MP_ACTUAL_PHASE.value and v<self.mem_duration else v) for (k,v) in self.prg_duration_dict.items() }
+
+        #self.mp_total_duration = sum(self.phase_duration_dict.values())         #total duration in hours
+        self.mp_total_duration = sum(self.prg_duration_dict.values())         #total duration in hours
         mp_total_seconds = self.mp_total_duration*3600                     #total duration in seconds
 
-
-
+        
+        #to review
         if Shared.MP_PROGRAM_IS_RUNNING == False:
             Shared.MP_TIMER_BEGIN = datetime.now()
 
-
+        Shared.MP_TIMER_BEGIN = datetime.now()
         self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
 
         Shared.MP_TOTAL_DURATION = self.mp_total_duration

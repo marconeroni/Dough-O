@@ -67,6 +67,7 @@ MP_ACTUAL_PHASE_DURATION = Value('d', 0.5)
 MP_ACTUAL_PHASE = Value(c_wchar,  '1')
 
 MP_DURATION_DICT = {}
+MP_PRG_DURATION_DICT = {}
 MP_TEMP_TARGET_DICT = {}
 
 MP_TIMER_BEGIN = datetime.now()
@@ -101,6 +102,7 @@ def reset_all(self):
     #self.POWER_STATUS_CODE.value = 0
 
     self.MP_DURATION_DICT = {}
+    self.MP_PRG_DURATION_DICT = {}
     self.MP_TEMP_TARGET_DICT = {}
 
     self.MP_TIMER_BEGIN = datetime.now()
