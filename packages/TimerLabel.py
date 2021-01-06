@@ -11,7 +11,7 @@ from datetime import datetime
 class TimerLabel(Label):
     def __init__(self, **kwargs):
         self.clockObj=None
-        self.__counter = 0                      # first tick occurs after 1 second
+        self._counter = 0                      # first tick occurs after 1 second
         self.__minutes_remaining=0
         self.__seconds_remaining=0
         self.__hours_remaining=0
@@ -20,7 +20,7 @@ class TimerLabel(Label):
         self.__hours_elapsed=0
         self._time_format_flag =True
         self.register_event_type('on_counter')
-        super().__init__()                      # without this there are troubles with self.__counter
+        super().__init__()                      # without this there are troubles with self._counter
 
 
     time_begin= ObjectProperty(datetime.now())
@@ -30,6 +30,7 @@ class TimerLabel(Label):
     remaining_time=StringProperty('')
     remaining_time_in_seconds = NumericProperty(0.0)
     elapsed_time = StringProperty('')
+    elapsed_time_in_seconds = NumericProperty(0.0)
     format_time =StringProperty('---:--:--')
     end_phase = BooleanProperty(False)
     is_active = False
@@ -40,7 +41,7 @@ class TimerLabel(Label):
         if remaining_time <= 0 and infinite is False:
             self.dispatch('on_counter')
         else:
-            self.__counter+=1
+            self._counter+=1
 
     def on_counter(self):
         self.stop()
@@ -56,7 +57,7 @@ class TimerLabel(Label):
     def reset(self):
         self.end_phase = True
         self.phase_duration = 0.0
-        self.__counter=0
+        self._counter=0
 
     def clear_text(self):
         self.format_time = '---:--:--'
@@ -67,7 +68,7 @@ class TimerLabel(Label):
 
     def update(self, dt):
 
-        self.remaining_time_in_seconds= int((self.duration*3600)-self.__counter)
+        self.remaining_time_in_seconds= int((self.duration*3600)-self._counter)
 
         if self.remaining_time_in_seconds <=0:
             self.remaining_time_in_seconds = 0
@@ -76,7 +77,7 @@ class TimerLabel(Label):
         self.__minutes_remaining, self.__seconds_remaining = divmod(self.remaining_time_in_seconds, 60)
         self.__hours_remaining, self.__minutes_remaining = divmod(self.__minutes_remaining, 60)
 
-        self.__minutes_elapsed, self.__seconds_elapsed = divmod(self.__counter, 60)
+        self.__minutes_elapsed, self.__seconds_elapsed = divmod(self._counter, 60)
         self.__hours_elapsed, self.__minutes_elapsed = divmod(self.__minutes_elapsed, 60)
 
         self.remaining_time ='-{:02.0f}:{:02.0f}:{:02.0f}'.format(self.__hours_remaining, self.__minutes_remaining, self.__seconds_remaining)

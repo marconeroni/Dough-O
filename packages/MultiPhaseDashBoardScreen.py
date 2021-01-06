@@ -367,5 +367,5 @@ class MultiPhase_DashBoard_Screen(Screen):
 
         Shared.MP_ACTUAL_PHASE_DURATION.value = self.actual_phase_duration = self.lbl_timer.duration
         Shared.MP_ELAPSED_TIME =self.lbl_timer.elapsed_time
-
+        Shared.MP_ELAPSED_TIME_IN_SECONDS.value =self.lbl_timer._counter
 

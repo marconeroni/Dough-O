@@ -129,7 +129,6 @@ class MultiPhase_Set_Screen(Screen):
 
 
     def decrement_duration(self, _phase):
-      
         self.phase_duration_dict= {k:(v-self.increment if k==str(_phase) and v > self.mindur+ self.increment else v) for (k,v) in self.phase_duration_dict.items() }
         self.validate()
 
@@ -158,7 +157,6 @@ class MultiPhase_Set_Screen(Screen):
             self.validate()
 
         Shared.MP_ACTUAL_PHASE.value ='1' # is mandatory to reset phase in Shared variable
-
         self.validate()
 
 
@@ -206,31 +204,37 @@ class MultiPhase_Set_Screen(Screen):
             self.mp_btn5.disabled = False
             self.mp_btn5.state = 'down'
 
+
         self.prg_duration_dict.update(self.phase_duration_dict)
 
+        if Shared.MP_REMAINING_TIME.value/3600 < self.mem_duration-self.phase_duration_dict.get(Shared.MP_ACTUAL_PHASE.value)  and Shared.MP_PROGRAM_IS_RUNNING==True:
+            self.prg_duration_dict[Shared.MP_ACTUAL_PHASE.value]= self.mem_duration-Shared.MP_REMAINING_TIME.value/3600
+
+
         if Shared.MP_PROGRAM_IS_RUNNING==True:
-            self.prg_duration_dict = {k:((0) if int(k)<int(Shared.MP_ACTUAL_PHASE.value) else v) for (k,v) in self.prg_duration_dict.items() }
-            #self.prg_duration_dict = {k:((Shared.MP_REMAINING_TIME.value/3600) if k==Shared.MP_ACTUAL_PHASE.value and v==self.mem_duration else v) for (k,v) in self.prg_duration_dict.items() }
-            self.prg_duration_dict = {k:((v-(self.mem_duration-Shared.MP_REMAINING_TIME.value/3600)) if k==Shared.MP_ACTUAL_PHASE.value  else v) for (k,v) in self.prg_duration_dict.items() }
-            #self.prg_duration_dict = {k:(v-(self.mem_duration-Shared.MP_REMAINING_TIME.value/3600) if k==Shared.MP_ACTUAL_PHASE.value and v<self.mem_duration else v) for (k,v) in self.prg_duration_dict.items() }
+            self.prg_duration_dict = {k:((0) if int(k) < int(Shared.MP_ACTUAL_PHASE.value) else v) for (k,v) in self.prg_duration_dict.items() }
 
         #self.mp_total_duration = sum(self.phase_duration_dict.values())         #total duration in hours
-        self.mp_total_duration = sum(self.prg_duration_dict.values())         #total duration in hours
-        mp_total_seconds = self.mp_total_duration*3600                     #total duration in seconds
+        buf_duration = sum(self.prg_duration_dict.values())
 
-        
+        #mp_total_seconds = self.mp_total_duration*3600                     #total duration in seconds
+
+        mp_total_seconds = buf_duration*3600 - Shared.MP_ELAPSED_TIME_IN_SECONDS.value                    #total duration in seconds
+
+
         #to review
         if Shared.MP_PROGRAM_IS_RUNNING == False:
             Shared.MP_TIMER_BEGIN = datetime.now()
-
-        Shared.MP_TIMER_BEGIN = datetime.now()
-        self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
+            self.mp_total_duration = sum(self.phase_duration_dict.values())         #total duration in hours
+        #Shared.MP_TIMER_BEGIN = datetime.now()
+        #self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
+        self.mp_time_end = datetime.now() + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
+        self.mp_total_duration = f"{((self.mp_time_end - Shared.MP_TIMER_BEGIN).seconds)/3600:.2f}"
 
         Shared.MP_TOTAL_DURATION = self.mp_total_duration
         Shared.MP_TIME_END = self.mp_time_end
         Shared.MP_TEMP_TARGET_DICT = self.phase_temp_target_dict
         Shared.MP_DURATION_DICT = self.phase_duration_dict
-    
-    # FUNCTION NO LONGER USED!
+
     def store_duration(self): #call this function when accept button is pressed (before other calls)
         self.mem_duration = self.phase_duration_dict.get(f"{Shared.MP_ACTUAL_PHASE.value}")

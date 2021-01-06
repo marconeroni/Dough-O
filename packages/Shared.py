@@ -60,6 +60,7 @@ PRESTART_START_DATE= datetime.now()
 #-------------------MULTIPHASE VARIABLES--------------------------
 MP_ELAPSED_TIME = 0.0
 MP_REMAINING_TIME = Value('d', 0.0)
+MP_ELAPSED_TIME_IN_SECONDS = Value('d', 0.0)
 MP_TIME_END = datetime.now()
 MP_TOTAL_DURATION= 0.5
 MP_ACTUAL_PHASE_DURATION = Value('d', 0.5)
@@ -91,7 +92,7 @@ def reset_all(self):
     self.PRESTART_START_DATE= datetime.now()
     
 
-    self.MP_ELAPSED_TIME = 0.0
+    #self.MP_ELAPSED_TIME.value = 0.0
     self.MP_TIME_END = datetime.now()
     self.MP_TOTAL_DURATION= 0.5
     self.MP_ACTUAL_PHASE_DURATION.value = 0.5
