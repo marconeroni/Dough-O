@@ -214,10 +214,8 @@ class MultiPhase_Set_Screen(Screen):
         if Shared.MP_PROGRAM_IS_RUNNING==True:
             self.prg_duration_dict = {k:((0) if int(k) < int(Shared.MP_ACTUAL_PHASE.value) else v) for (k,v) in self.prg_duration_dict.items() }
 
-        #self.mp_total_duration = sum(self.phase_duration_dict.values())         #total duration in hours
-        buf_duration = sum(self.prg_duration_dict.values())
-
-        #mp_total_seconds = self.mp_total_duration*3600                     #total duration in seconds
+    
+        buf_duration = sum(self.prg_duration_dict.values()) #total duration in hours
 
         mp_total_seconds = buf_duration*3600 - Shared.MP_ELAPSED_TIME_IN_SECONDS.value                    #total duration in seconds
 
@@ -225,11 +223,10 @@ class MultiPhase_Set_Screen(Screen):
         #to review
         if Shared.MP_PROGRAM_IS_RUNNING == False:
             Shared.MP_TIMER_BEGIN = datetime.now()
-            self.mp_total_duration = sum(self.phase_duration_dict.values())         #total duration in hours
-        #Shared.MP_TIMER_BEGIN = datetime.now()
-        #self.mp_time_end = Shared.MP_TIMER_BEGIN + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
+            #self.mp_total_duration = sum(self.phase_duration_dict.values())         #no longer needed
+       
         self.mp_time_end = datetime.now() + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
-        self.mp_total_duration = f"{((self.mp_time_end - Shared.MP_TIMER_BEGIN).seconds)/3600:.2f}"
+        self.mp_total_duration = f"{((self.mp_time_end - Shared.MP_TIMER_BEGIN).seconds)/3600:.2f}" #total duration in hours
 
         Shared.MP_TOTAL_DURATION = self.mp_total_duration
         Shared.MP_TIME_END = self.mp_time_end
