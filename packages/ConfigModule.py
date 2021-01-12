@@ -146,7 +146,7 @@ class ConfigModule(object):
     warning_audio = ''
     alert_audio = ''
     numid ='1' # external is usually 6
-    card_num = 'Device' # external is usually 1
+    card_num = 'Headphones' # external is usually 1
     camera_resolution = '1280x720'
 
     # read file config on start
@@ -695,7 +695,6 @@ class ConfigModule(object):
             cls.config['CONTROLLER']['comp_prot'] = f"{cls.COMP_PROT:.1f}"
             cls.config['AUDIO']['card_num'] = cls.card_num
             cls.config['AUDIO']['numid'] = cls.numid
-            cls.config['AUDIO']['sound_volume'] = str(cls.sound_volume)
             cls.config['AUDIO']['button'] = cls.button_audio
             cls.config['AUDIO']['button_ok'] = cls.button_ok_audio
             cls.config['AUDIO']['button_cancel'] = cls.button_cancel_audio
