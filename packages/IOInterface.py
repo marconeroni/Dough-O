@@ -192,7 +192,7 @@ class IOInterface(object):
                     io_logger.error(f"MAIN POWER FAILURE DETECTED !!!")
                     logger.info(f"SHUTDOWN IN {int(ConfigModule.ups_shutdown/60)} MINUTES AT TIME: {time_formatted}")
                     io_logger.info(f"SHUTDOWN IN {int(ConfigModule.ups_shutdown/60)} MINUTES AT TIME: {time_formatted}")
-
+                    cls.pwm = False
                     cls.power_loss_flag = True # flag that we have power loss
                 else:
                     pass
