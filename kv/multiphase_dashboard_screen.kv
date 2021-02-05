@@ -109,11 +109,15 @@
                             id: lbl_timer
                             markup:True
                             text:
-                                '[font=Aldrich][color=#009688][size=44]'+ escape_markup(self.format_time)+'[/font][/size][/color]' \
+                                '[font=Aldrich][color=#009688][size=43]'+ escape_markup(self.format_time)+'[/font][/size][/color]' \
                                 if self._time_format_flag == False \
                                 else '[font=Aldrich][color=#009688][size=48]'+ escape_markup(self.format_time)+'[/font][/size][/color]' 
-
+                            #comment this line...
                             pos_hint: {'x': -0.09,'y': 0.3}
+                            # ...and uncomment these lines if you want to align timer text on the left
+                            #pos_hint: {'x': 0.14,'y': 0.72}
+                            #halign: 'left'
+                            #text_size: self.size
 
                         MP_DB_ValueLabel:
                             id: mp_lbl_actual_phase

@@ -226,8 +226,7 @@ class MultiPhase_Set_Screen(Screen):
             #self.mp_total_duration = sum(self.phase_duration_dict.values())         #no longer needed
        
         self.mp_time_end = datetime.now() + timedelta(seconds=mp_total_seconds) #time end program/cycles; we must refer timer begin in multiphase dash
-        self.mp_total_duration = f"{((self.mp_time_end - Shared.MP_TIMER_BEGIN).seconds)/3600:.2f}" #total duration in hours
-
+        self.mp_total_duration = f"{((self.mp_time_end - Shared.MP_TIMER_BEGIN).total_seconds())/3600:.2f}" #total duration in hours
         Shared.MP_TOTAL_DURATION = self.mp_total_duration
         Shared.MP_TIME_END = self.mp_time_end
         Shared.MP_TEMP_TARGET_DICT = self.phase_temp_target_dict
