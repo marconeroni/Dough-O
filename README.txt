@@ -1,6 +1,6 @@
 ################### Dough-O! by Marco Neroni 2020 ###################
 ######################### www.dougho.com ###########################
-######################### release 1.1.0 #########################
+######################### release 1.1.1 #########################
 
 Python  3.7.3   www.python.org
 Kivy    2.0.0   www.kivy.org
@@ -45,6 +45,9 @@ Free icons from flaticon.com in accordance with terms of use:
 # icongeek26
 # Kiranshastry
 
+
+------ release 1.1.1 ------
+fixed minor bugs
 
 ------ release 1.1.0 ------
 added camera menu
