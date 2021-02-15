@@ -1,7 +1,9 @@
+from kivy.uix.behaviors.button import ButtonBehavior
 from kivy.uix.screenmanager import Screen
 from kivy.properties import *
 from kivy.utils import escape_markup
 from kivy.clock import Clock
+from kivy.uix.button import Button
 
 from packages import Shared
 from packages.ClockLabel import ClockLabel
@@ -88,10 +90,13 @@ class Home_Screen(Screen):
             #self.hs_img_out_state, self.hs_img_out_label= self.outimage.set_image(f"{Shared.COMPRESSOR_STATE.value}{Shared.LO_HEATER_STATE.value}{Shared.HI_HEATER_STATE.value}", True)
 
 
+    def launch_browser(self):
+        ConfigModule.launch_browser()
+
     def set_menu_icon(self,dt):
         self.hs_internet_icon.set_input_state(self.ping.return_value)
         self.hs_power_icon.set_input_state(Shared.POWER_STATUS_CODE.value)
-        
+
         if ConfigModule.wi_fi == True:
             self.wifi_icon.source= './Icons/wifi2_64.png'
         else:
@@ -129,8 +134,7 @@ class Home_Screen(Screen):
             self.clockObj = Clock.create_trigger(self.update_temp, 1, True)
             self.clockObj()
 
-    
-        
+
 
 
     def on_leave(self):

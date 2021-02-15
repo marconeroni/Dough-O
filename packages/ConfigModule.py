@@ -557,6 +557,21 @@ class ConfigModule(object):
 
 
     @classmethod
+    def launch_browser(cls):
+        print('ciaoooo')
+        try:
+            
+            cmd = 'chromium-browser'
+            sb = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell = True, universal_newlines=True)
+            stdout_value, stdout_err = sb.communicate()
+            if stdout_value == '' or stdout_value is None:
+                sb.kill()
+        except Exception as err:
+            cls.logger.error(err)
+            sb.kill()
+
+
+    @classmethod
     def getlangfiles(cls):
         try:
             langdir=cls.app_dir.joinpath('Lang')

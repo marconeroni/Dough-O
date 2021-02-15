@@ -1,7 +1,8 @@
+from kivy.uix.behaviors.button import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.clock import Clock
 
-class BlinkIcon(Image):
+class BlinkIcon(ButtonBehavior,Image):
 
     source_disabled = ''
     source_off= ''
