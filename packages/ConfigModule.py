@@ -558,7 +558,7 @@ class ConfigModule(object):
 
     @classmethod
     def launch_browser(cls):
-        App.get_running_app().root_window.hide()
+        App.get_running_app().root_window.height = 400
         #try:
             #cmd = 'chromium-browser --start-maximized'
             #sb = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell = True, universal_newlines=True)
