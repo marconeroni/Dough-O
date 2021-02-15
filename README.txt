@@ -47,6 +47,7 @@ Free icons from flaticon.com in accordance with terms of use:
 
 
 ------ release 1.1.1 ------
+Added desktop/Chromium access on app
 fixed minor bugs
 
 ------ release 1.1.0 ------
