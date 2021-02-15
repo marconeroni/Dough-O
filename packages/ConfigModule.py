@@ -556,14 +556,14 @@ class ConfigModule(object):
         async_strength.start()
 
 
-    @classmethod
+    @classmethod # this is a test version
     def launch_browser(cls):
         App.get_running_app().root_window.minimize()
-        try:
+        try: # check if Chromium process is already running
             check = 'pgrep chromium'
-            sb0 = subprocess.Popen(check, stdout=subprocess.PIPE, universal_newlines=True)
+            sb0 = subprocess.Popen(check, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
             stdout_value, stdout_err = sb0.communicate()
-            if stdout_value == '' or stdout_value is None:
+            if stdout_value == '' or stdout_value is None: #launch Chromium if pgrep returns none
                 try:
                     cmd = 'chromium-browser --start-maximized'
                     sb = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell = True, universal_newlines=True)

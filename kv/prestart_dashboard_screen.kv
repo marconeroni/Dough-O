@@ -328,7 +328,8 @@
                     keep_ratio: True
                     size_hint: 0.07,0.07
                     pos_hint: {'x': 0.02,'y': 0.03}
-
+                    on_press: app.btn_sound()
+                    on_release: root.launch_browser()
 
                 Label:
                     markup: True

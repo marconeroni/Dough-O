@@ -170,6 +170,8 @@ class PreStart_DashBoard_Screen(Screen):
         Shared.ENABLE_OUTPUT.value = 0
         Shared.PRGM_STATUS_CODE.value = 150
 
+    def launch_browser(self):
+        ConfigModule.launch_browser()
 
     def mute_audio(self):
         ConfigModule.mem_volume = ConfigModule.sound_volume

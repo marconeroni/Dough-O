@@ -246,6 +246,8 @@ class MultiPhase_DashBoard_Screen(Screen):
         Shared.PRGM_STATUS_CODE.value = 150
 
 
+    def launch_browser(self):
+        ConfigModule.launch_browser()
 
 
     def on_leave(self):
@@ -255,8 +257,8 @@ class MultiPhase_DashBoard_Screen(Screen):
         self.ping.stop()
 
     # update running even after program ending, for continuos temperature measurement
-    def update(self, dt):   
-        
+    def update(self, dt):
+
         program_details = ''
         app = App.get_running_app()
         
