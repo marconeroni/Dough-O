@@ -558,13 +558,21 @@ class ConfigModule(object):
 
     @classmethod
     def launch_browser(cls):
-        App.get_running_app().root_window.size = (800,400)
-        #try:
-            #cmd = 'chromium-browser --start-maximized'
-            #sb = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell = True, universal_newlines=True)
-        #except Exception as err:
-            #cls.logger.error(err)
-            #sb.kill()
+        App.get_running_app().root_window.minimize()
+        try:
+            check = 'pgrep chromium'
+            sb0 = subprocess.Popen(check, stdout=subprocess.PIPE, universal_newlines=True)
+            stdout_value, stdout_err = sb0.communicate()
+            if stdout_value == '' or stdout_value is None:
+                try:
+                    cmd = 'chromium-browser --start-maximized'
+                    sb = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell = True, universal_newlines=True)
+                except Exception as err:
+                    cls.logger.error(err)
+                    sb.kill()
+        except Exception as err:
+            cls.logger.error(err)
+            sb0.kill()
 
 
     @classmethod
