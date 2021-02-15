@@ -18,7 +18,7 @@ from pathlib import Path
 from kivy.config import Config
 from threading import Thread, Event
 from zipfile import ZipFile
-
+from kivy.app import App
 
 
 
@@ -558,12 +558,13 @@ class ConfigModule(object):
 
     @classmethod
     def launch_browser(cls):
-        try:
-            cmd = 'chromium-browser --start-maximized'
-            sb = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell = True, universal_newlines=True)
-        except Exception as err:
-            cls.logger.error(err)
-            sb.kill()
+        App.get_running_app().root_window.minimize()
+        #try:
+            #cmd = 'chromium-browser --start-maximized'
+            #sb = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell = True, universal_newlines=True)
+        #except Exception as err:
+            #cls.logger.error(err)
+            #sb.kill()
 
 
     @classmethod
